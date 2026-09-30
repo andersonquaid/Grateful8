@@ -2,7 +2,10 @@ name: Refresh league hub
 
 on:
   schedule:
-    - cron: "7 12 * * 2"   # Tuesdays 8:07 AM Eastern (12:07 UTC), after Monday Night Football
+    # Tuesdays 5:03 AM Eastern. GitHub schedules run in UTC, so there is one entry for daylight time (EDT, 09:03 UTC)
+    # and one for standard time (EST, 10:03 UTC); the first step skips whichever doesn't match the current season.
+    - cron: "3 9 * * 2"
+    - cron: "3 10 * * 2"
   workflow_dispatch:        # "Run workflow" button for an on-demand refresh
   push:
     branches: [main]
@@ -20,24 +23,40 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      - name: Keep only the 5 AM Eastern run
+        id: gate
+        run: |
+          off=$(TZ=America/New_York date +%z)
+          want="3 10 * * 2"; [ "$off" = "-0400" ] && want="3 9 * * 2"
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "${{ github.event.schedule }}" != "$want" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"; echo "Skipping: this is the other daylight-saving slot."
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/checkout@v4
+        if: steps.gate.outputs.run == 'true'
       - uses: actions/setup-python@v5
+        if: steps.gate.outputs.run == 'true'
         with:
           python-version: "3.11"
       - run: pip install numpy
+        if: steps.gate.outputs.run == 'true'
       - name: Pull Sleeper data and rebuild the page
+        if: steps.gate.outputs.run == 'true'
         working-directory: build
         run: |
           python collect_sleeper.py
           python build_league.py
           python build_league_edition.py --standalone ../index.html
       - name: Save the page on main
+        if: steps.gate.outputs.run == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
           git diff --cached --quiet || { git commit -m "Refresh league hub $(date -u +%F)"; git push; }
       - name: Publish to GitHub Pages (gh-pages branch)
+        if: steps.gate.outputs.run == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
