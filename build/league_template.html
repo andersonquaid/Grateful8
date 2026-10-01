@@ -389,7 +389,8 @@ function bracketsPage(){
   const tmRow=(g,t)=>{ const tt=T[t.rid]; const done=g.win!=null;
     let chip="";
     if(g.id==="final"&&B.champ===t.rid) chip=`<span class="chip acc">Champion</span>`;
-    if(g.id==="tfinal"&&B.bowl===t.rid) chip=`<span class="chip" title="Takes pick 2.09">Toilet Bowl</span>`;
+    if(g.id==="tfinal"&&B.bowl===t.rid) chip=`<span class="chip acc" title="Wins the Toilet Bowl and pick 2.09">2.09</span>`;
+    if(g.id==="last"&&B.last_place===t.rid) chip=`<span class="chip" title="Loses out and takes the punishment">Last place</span>`;
     const x=st[t.rid]; const sc = B.live ? `${x.w}-${x.l}${x.t?"-"+x.t:""}` : f2(t.pts);
     return `<div class="tm ${done?(g.win===t.rid?"win":"lose"):""} ${hl(tt.owner_id)}"><span class="sd">${t.seed}</span><span class="nm"><b>${esc(tt.name)}</b>${chip}</span><span class="sc">${sc}</span></div>`; };
   const match=(g,cls="")=>{
@@ -409,7 +410,7 @@ function bracketsPage(){
   return `<div class="page"><div class="bar-row"><span class="eyebrow">Season</span><div class="seg" role="group" aria-label="Season">${seg}</div></div>
   <div class="bk-grid">
   <section class="panel"><div class="panel-h"><div><div class="eyebrow">${esc(eb)}</div><h2>Playoffs</h2><div class="muted" style="font-size:12.5px;margin-top:2px">Top four seeds. Finish sets draft picks 5–8; the champion picks 8th.${esc(seedNote)}</div></div></div><div class="panel-b">${bracket(B.playoff)}</div></section>
-  <section class="panel"><div class="panel-h"><div><div class="eyebrow">${esc(eb)}</div><h2>Toilet Bowl</h2><div class="muted" style="font-size:12.5px;margin-top:2px">Seeds 5–8. Round 1 losers play in the Toilet Bowl final, and its loser takes the Toilet Bowl and pick 2.09. Round 1 winners play for 5th.</div></div></div><div class="panel-b">${bracket(B.toilet)}</div></section>
+  <section class="panel"><div class="panel-h"><div><div class="eyebrow">${esc(eb)}</div><h2>Toilet Bowl</h2><div class="muted" style="font-size:12.5px;margin-top:2px">Seeds 5–8. Round 1 winners meet in the Toilet Bowl final, and its winner gets pick 2.09. Round 1 losers play for last place, and the loser takes the punishment.</div></div></div><div class="panel-b">${bracket(B.toilet)}</div></section>
   </div></div>`;
 }
 

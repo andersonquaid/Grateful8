@@ -6,31 +6,102 @@
     "parlay": 20,
     "teams": 8,
     "pay_to": "Commissioner Quaid Anderson",
-    "methods": "Venmo (@Quaid-Anderson) or cash, paid in full",
+    "methods": "Venmo or cash, paid in full",
     "future_picks": "Dues for any future-year pick you trade for are due at the time of the trade."
   },
   "payouts": {
     "places": [
-      {"place": 1, "label": "Champion", "amount": 250, "extra": "Plus a jersey of their choice, up to $200. Your fantasy MVP."},
-      {"place": 2, "label": "Runner-up", "amount": 200},
-      {"place": 3, "label": "Third place", "amount": 100},
-      {"place": 4, "label": "4th–8th", "amount": 0}
+      {
+        "place": 1,
+        "label": "Champion",
+        "amount": 250,
+        "extra": "Plus a jersey of their choice, up to $200. Your fantasy MVP."
+      },
+      {
+        "place": 2,
+        "label": "Runner-up",
+        "amount": 200
+      },
+      {
+        "place": 3,
+        "label": "Third place",
+        "amount": 100
+      },
+      {
+        "place": 4,
+        "label": "4th–8th",
+        "amount": 0
+      }
     ],
-    "weekly": {"amount": 20, "weeks": 14, "label": "Highest score each week"},
-    "season_high": {"label": "Most points in the regular season", "amount_text": "Whatever is left over, about $40"}
+    "weekly": {
+      "amount": 20,
+      "weeks": 14,
+      "label": "Highest score each week"
+    },
+    "season_high": {
+      "label": "Most points in the regular season",
+      "amount_text": "Whatever is left over, about $40"
+    }
   },
   "dates": [
-    {"event": "Owner's Meeting", "what": "Weekly waivers and trades open", "date": null, "date_text": "Done"},
-    {"event": "Start of the NFL league year", "what": "NFL event", "date": "2026-03-11"},
-    {"event": "NFL Draft", "what": "NFL event", "date": "2026-04-23"},
-    {"event": "Rookie Draft", "what": "League event, 8:15 PM", "date": "2026-06-22"},
-    {"event": "Preseason starts", "what": "Waivers move to daily", "date": "2026-08-06"},
-    {"event": "Last preseason game", "what": "Legal roster required", "date": "2026-08-29"},
-    {"event": "First regular-season game", "what": "Taxi squads lock", "date": "2026-09-09"},
-    {"event": "Final game of Week 12", "what": "Trade deadline", "date": "2026-11-30", "note": "Trades must be accepted by the end of this game."},
-    {"event": "Fantasy playoffs begin", "what": "Week 15", "date": "2026-12-17"},
-    {"event": "Championship week", "what": "Week 16", "date": "2026-12-24"},
-    {"event": "Offseason", "what": "Until the next Owner's Meeting", "date": "2026-12-28", "note": "Trades and waivers turn off."}
+    {
+      "event": "Owner's Meeting",
+      "what": "Weekly waivers and trades open",
+      "date": null,
+      "date_text": "Done"
+    },
+    {
+      "event": "Start of the NFL league year",
+      "what": "NFL event",
+      "date": "2026-03-11"
+    },
+    {
+      "event": "NFL Draft",
+      "what": "NFL event",
+      "date": "2026-04-23"
+    },
+    {
+      "event": "Rookie Draft",
+      "what": "League event, 8:15 PM",
+      "date": "2026-06-22"
+    },
+    {
+      "event": "Preseason starts",
+      "what": "Waivers move to daily",
+      "date": "2026-08-06"
+    },
+    {
+      "event": "Last preseason game",
+      "what": "Legal roster required",
+      "date": "2026-08-29"
+    },
+    {
+      "event": "First regular-season game",
+      "what": "Taxi squads lock",
+      "date": "2026-09-09"
+    },
+    {
+      "event": "Final game of Week 12",
+      "what": "Trade deadline",
+      "date": "2026-11-30",
+      "note": "Trades must be accepted by the end of this game."
+    },
+    {
+      "event": "Fantasy playoffs begin",
+      "what": "Week 15",
+      "date": "2026-12-17"
+    },
+    {
+      "event": "Championship week",
+      "what": "Week 16",
+      "date": "2026-12-24"
+    },
+    {
+      "event": "Offseason",
+      "what": "Until the next Owner's Meeting",
+      "date": "2026-12-28",
+      "note": "Trades and waivers turn off."
+    }
   ],
   "yearly": [
     "Owner's Meeting before the NFL season, in March: rule changes and votes, trophies, and the draft order is set. Firm handshakes and hearty laughs all around.",
@@ -42,60 +113,117 @@
     "Deadzone: waivers and trades are off until the next Owner's Meeting."
   ],
   "rules": [
-    {"title": "Scoring", "items": [
-      "Half PPR, full PPR for tight ends (+0.5 per TE catch)",
-      "Passing: 4 points per TD, 0.04 per yard (1 point per 25 yards)",
-      "Rushing and receiving: 6 points per TD, 0.1 per yard",
-      "2 points per two-point conversion",
-      "Interception thrown: −1",
-      "Fumble lost: −2"
-    ]},
-    {"title": "Roster", "items": [
-      "Starters: QB, 2 RB, 3 WR, TE, 2 FLEX, 1 SUPERFLEX",
-      "17 bench spots",
-      "4 IR spots. The player must be on the NFL's IR or PUP list.",
-      "4 taxi squad spots, rookies only. Set them before Week 1; once the season starts nobody can be moved onto the taxi squad, but you can move a player off it anytime you have a legal roster. After one year of NFL experience a player must leave the taxi squad (roster, drop or trade)."
-    ]},
-    {"title": "Schedule and playoffs", "items": [
-      "One division of 8 teams. Balanced schedule: everyone plays every team twice.",
-      "Playoffs in Weeks 15 and 16. Four teams, one-week matchups.",
-      "The bottom four play a consolation bracket."
-    ]},
-    {"title": "Rookie draft order", "items": [
-      "Playoff teams pick by inverse playoff finish. The champion picks 8th.",
-      "Non-playoff teams pick by Max Points For at the end of the regular season (best possible lineup, not starters). Lowest Max PF picks 1st, so benching your starters doesn't help you tank.",
-      "Pick 2.09 goes to the winner of the consolation bracket.",
-      "Pick 3.09 goes to the team with the most points against in the regular season."
-    ]},
-    {"title": "Rookie draft", "items": [
-      "Rookies only, 4 rounds, linear (not snake), 5 minutes per pick.",
-      "Trades are allowed during the draft, and each team gets one 5-minute pause.",
-      "Current and future picks can be traded.",
-      "2026 draft: June 22, 8:15 PM."
-    ]},
-    {"title": "Transactions", "items": [
-      "Players lock at the start of their game each week and unlock Wednesday at 12 PM.",
-      "Tuesday night is the first waiver run each week; after that waivers process daily at 12 PM. Players clear waivers after 1 day.",
-      "No limit on transactions. No trade vetoes; trades truly worth discussing go to a league vote.",
-      "Trade deadline: Week 12.",
-      "FAAB: $200 per season, reset once after the Super Bowl, no carryover. $0 bids allowed.",
-      "Waiver priority follows draft order (1.01 has the lowest priority). A claim sends you to the back; priority breaks ties on equal bids.",
-      "Waivers stay open year-round except the deadzone between the championship and the Owner's Meeting."
-    ]}
+    {
+      "title": "Scoring",
+      "items": [
+        "Half PPR, full PPR for tight ends (+0.5 per TE catch)",
+        "Passing: 4 points per TD, 0.04 per yard (1 point per 25 yards)",
+        "Rushing and receiving: 6 points per TD, 0.1 per yard",
+        "2 points per two-point conversion",
+        "Interception thrown: −1",
+        "Fumble lost: −2"
+      ]
+    },
+    {
+      "title": "Roster",
+      "items": [
+        "Starters: QB, 2 RB, 3 WR, TE, 2 FLEX, 1 SUPERFLEX",
+        "17 bench spots",
+        "4 IR spots. The player must be on the NFL's IR or PUP list.",
+        "4 taxi squad spots, rookies only. Set them before Week 1; once the season starts nobody can be moved onto the taxi squad, but you can move a player off it anytime you have a legal roster. After one year of NFL experience a player must leave the taxi squad (roster, drop or trade)."
+      ]
+    },
+    {
+      "title": "Schedule and playoffs",
+      "items": [
+        "One division of 8 teams. Balanced schedule: everyone plays every team twice.",
+        "Playoffs in Weeks 15 and 16. Four teams, one-week matchups.",
+        "The bottom four play the Toilet Bowl. Round 1 winners meet in the final for pick 2.09; round 1 losers play for last place, and the loser takes the punishment."
+      ]
+    },
+    {
+      "title": "Rookie draft order",
+      "items": [
+        "Playoff teams pick by inverse playoff finish. The champion picks 8th.",
+        "Non-playoff teams pick by Max Points For at the end of the regular season (best possible lineup, not starters). Lowest Max PF picks 1st, so benching your starters doesn't help you tank.",
+        "Pick 2.09 goes to the Toilet Bowl winner: the non-playoff team that wins both of its games.",
+        "Pick 3.09 goes to the team with the most points against in the regular season."
+      ]
+    },
+    {
+      "title": "Rookie draft",
+      "items": [
+        "Rookies only, 4 rounds, linear (not snake), 5 minutes per pick.",
+        "Trades are allowed during the draft, and each team gets one 5-minute pause.",
+        "Current and future picks can be traded.",
+        "2026 draft: June 22, 8:15 PM."
+      ]
+    },
+    {
+      "title": "Transactions",
+      "items": [
+        "Players lock at the start of their game each week and unlock Wednesday at 12 PM.",
+        "Tuesday night is the first waiver run each week; after that waivers process daily at 12 PM. Players clear waivers after 1 day.",
+        "No limit on transactions. No trade vetoes; trades truly worth discussing go to a league vote.",
+        "Trade deadline: Week 12.",
+        "FAAB: $200 per season, reset once after the Super Bowl, no carryover. $0 bids allowed.",
+        "Waiver priority follows draft order (1.01 has the lowest priority). A claim sends you to the back; priority breaks ties on equal bids.",
+        "Waivers stay open year-round except the deadzone between the championship and the Owner's Meeting."
+      ]
+    }
   ],
   "votes": [
-    {"proposal": "Tie-breaking vote: goes to the reigning champ's partner, no context, immediate decision", "result": "6 Yes / 2 no vote"},
-    {"proposal": "Two-week championship", "result": "5 No / 3 Yes"},
-    {"proposal": "Head-to-head as the first tiebreaker", "result": "4 Yes / 3 No / 1 no vote (Laura said no)"},
-    {"proposal": "Build an extra $20 into the buy-in for the weekly parlay", "result": "8 Yes"},
-    {"proposal": "Buy-in to $130 + $20", "result": "7 Yes / 1 no vote"},
-    {"proposal": "Move the trade deadline to Week 12", "result": "5 Yes / 2 No / 1 no vote"},
-    {"proposal": "Bonus win/loss", "result": "6 No / 2 Yes"},
-    {"proposal": "TE super premium", "result": "7 No / 1 Yes"},
-    {"proposal": "Big play bonus", "result": "5 No / 3 Yes"},
-    {"proposal": "Expanded roster: 4 draft rounds, 4 taxi, 4 IR, +1 bench, +1 FLEX starter", "result": "8 Yes"},
-    {"proposal": "IDP", "result": "4 Yes / 3 No / 1 no vote"},
-    {"proposal": "Exclusive rights contract", "result": "No one"},
-    {"proposal": "Sit for the playoffs", "result": "No, but maybe in the future"}
+    {
+      "proposal": "Tie-breaking vote: goes to the reigning champ's partner, no context, immediate decision",
+      "result": "6 Yes / 2 no vote"
+    },
+    {
+      "proposal": "Two-week championship",
+      "result": "5 No / 3 Yes"
+    },
+    {
+      "proposal": "Head-to-head as the first tiebreaker",
+      "result": "4 Yes / 3 No / 1 no vote (Laura said no)"
+    },
+    {
+      "proposal": "Build an extra $20 into the buy-in for the weekly parlay",
+      "result": "8 Yes"
+    },
+    {
+      "proposal": "Buy-in to $130 + $20",
+      "result": "7 Yes / 1 no vote"
+    },
+    {
+      "proposal": "Move the trade deadline to Week 12",
+      "result": "5 Yes / 2 No / 1 no vote"
+    },
+    {
+      "proposal": "Bonus win/loss",
+      "result": "6 No / 2 Yes"
+    },
+    {
+      "proposal": "TE super premium",
+      "result": "7 No / 1 Yes"
+    },
+    {
+      "proposal": "Big play bonus",
+      "result": "5 No / 3 Yes"
+    },
+    {
+      "proposal": "Expanded roster: 4 draft rounds, 4 taxi, 4 IR, +1 bench, +1 FLEX starter",
+      "result": "8 Yes"
+    },
+    {
+      "proposal": "IDP",
+      "result": "4 Yes / 3 No / 1 no vote"
+    },
+    {
+      "proposal": "Exclusive rights contract",
+      "result": "No one"
+    },
+    {
+      "proposal": "Sit for the playoffs",
+      "result": "No, but maybe in the future"
+    }
   ]
 }

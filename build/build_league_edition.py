@@ -35,9 +35,9 @@ SL = {lg["league"]["season"]: lg for lg in json.load(open("sleeper.json"))["leag
 
 
 def brackets(s, S):
-    """Playoff and toilet bowl brackets. In season: seeded from current standings. Complete: Sleeper results with scores.
-    Toilet bowl: round-1 losers advance; the loser of the toilet bowl final takes the bowl (pick 2.09).
-    Round-1 winners play for 5th."""
+    """Playoff and Toilet Bowl brackets. In season: seeded from current standings. Complete: Sleeper results with scores.
+    Toilet Bowl: round-1 winners meet in the final (winner gets pick 2.09); round-1 losers play for last place
+    (loser takes the punishment). Sleeper tracks that bracket losers-advance, so winners come from scores."""
     seed = {x["rid"]: x["rank"] for x in S["standings"]}
     by_seed = {x["rank"]: x["rid"] for x in S["standings"]}
     wk1, wk2 = S["playoff_weeks"][:2]
@@ -66,22 +66,26 @@ def brackets(s, S):
              game("final", "Championship", 2, None, None, ["Winner 1 v 4", "Winner 2 v 3"]),
              game("third", "3rd place", 2, None, None, ["Loser 1 v 4", "Loser 2 v 3"])]
         Tb = [game("t1", "Round 1", 1, by_seed[5], by_seed[8]), game("t2", "Round 1", 1, by_seed[6], by_seed[7]),
-              game("tfinal", "Toilet Bowl final", 2, None, None, ["Loser 5 v 8", "Loser 6 v 7"]),
-              game("fifth", "5th place", 2, None, None, ["Winner 5 v 8", "Winner 6 v 7"])]
+              game("tfinal", "Toilet Bowl final", 2, None, None, ["Winner 5 v 8", "Winner 6 v 7"]),
+              game("last", "Last place", 2, None, None, ["Loser 5 v 8", "Loser 6 v 7"])]
         return {"live": True, "weeks": [wk1, wk2], "playoff": P, "toilet": Tb}
     lg = SL[s]
     wb = {g["m"]: g for g in lg["winners_bracket"]}
     lb = {g["m"]: g for g in lg["losers_bracket"]}
     fin = next(g for g in wb.values() if g.get("p") == 1); thd = next(g for g in wb.values() if g.get("p") == 3)
     r1w = sorted([g for g in wb.values() if g["r"] == 1], key=lambda g: min(seed[g["t1"]], seed[g["t2"]]))
-    tfin = next(g for g in lb.values() if g.get("p") == 1); fif = next(g for g in lb.values() if g.get("p") == 3)
     r1l = sorted([g for g in lb.values() if g["r"] == 1], key=lambda g: min(seed[g["t1"]], seed[g["t2"]]))
+    r1_win = {game("x", "", 1, g["t1"], g["t2"]).get("win") for g in r1l}
+    r2l = [g for g in lb.values() if g["r"] == 2]
+    tfin = next(g for g in r2l if {g["t1"], g["t2"]} <= r1_win)   # round-1 winners: Toilet Bowl final
+    lastg = next(g for g in r2l if g is not tfin)                  # round-1 losers: last place
     P = [game("sf1", "Semifinal", 1, r1w[0]["t1"], r1w[0]["t2"]), game("sf2", "Semifinal", 1, r1w[1]["t1"], r1w[1]["t2"]),
          game("final", "Championship", 2, fin["t1"], fin["t2"]), game("third", "3rd place", 2, thd["t1"], thd["t2"])]
     Tb = [game("t1", "Round 1", 1, r1l[0]["t1"], r1l[0]["t2"]), game("t2", "Round 1", 1, r1l[1]["t1"], r1l[1]["t2"]),
-          game("tfinal", "Toilet Bowl final", 2, tfin["t1"], tfin["t2"]), game("fifth", "5th place", 2, fif["t1"], fif["t2"])]
+          game("tfinal", "Toilet Bowl final", 2, tfin["t1"], tfin["t2"]), game("last", "Last place", 2, lastg["t1"], lastg["t2"])]
+    lp = next(t["rid"] for t in Tb[3]["teams"] if t["rid"] != Tb[3].get("win"))
     return {"live": False, "weeks": [wk1, wk2], "playoff": P, "toilet": Tb,
-            "champ": fin["w"], "bowl": tfin["w"]}
+            "champ": P[2].get("win"), "bowl": Tb[2].get("win"), "last_place": lp}
 
 
 seasons = {}

@@ -183,21 +183,33 @@ def standings(S, reg_only=True):
     return order
 
 
-def bracket_results(L):
-    """Return final place per roster (1-4 winners bracket, 5-8 toilet bowl) or None if incomplete.
-    Sleeper's losers bracket here is a toilet bowl: losers advance, and its "w" is the team that LOST the game.
-    p=1 is the toilet bowl final (its w lost twice: 8th, gets pick 2.09); p=3 is the round-1 winners' game (its l won: 5th)."""
+def bracket_results(L, S):
+    """Final place per roster from actual scores (1-4 playoffs, 5-8 Toilet Bowl), or None if incomplete.
+    Toilet Bowl: round-1 winners meet in the final; its winner is 5th and gets pick 2.09. Round-1 losers play for
+    last place; the loser is 8th and takes the punishment. Sleeper tracks that bracket losers-advance (for the
+    punishment), so its "w" is not the game winner there; scores decide here."""
+    start = L["league"]["settings"]["playoff_week_start"]
+    pts = {(r["w"], r["rid"]): r["pts"] for wk in S["weeks"] for r in wk["rows"]}
+
+    def result(g):
+        a, b, w = g.get("t1"), g.get("t2"), start + g["r"] - 1
+        if not a or not b or (w, a) not in pts or (w, b) not in pts:
+            return None
+        return (a, b) if pts[(w, a)] > pts[(w, b)] else (b, a)
+
     place = {}
     for g in L["winners_bracket"] or []:
-        if g.get("p") == 1 and g.get("w"):
-            place[g["w"]] = 1; place[g["l"]] = 2
-        if g.get("p") == 3 and g.get("w"):
-            place[g["w"]] = 3; place[g["l"]] = 4
-    for g in L["losers_bracket"] or []:
-        if g.get("p") == 3 and g.get("w"):
-            place[g["l"]] = 5; place[g["w"]] = 6
-        if g.get("p") == 1 and g.get("w"):
-            place[g["l"]] = 7; place[g["w"]] = 8
+        res = result(g) if g.get("p") in (1, 3) else None
+        if res:
+            base = 0 if g["p"] == 1 else 2
+            place[res[0]], place[res[1]] = base + 1, base + 2
+    lb = L["losers_bracket"] or []
+    r1_winners = {res[0] for res in (result(g) for g in lb if g["r"] == 1) if res}
+    for g in lb:
+        res = result(g) if g["r"] == 2 else None
+        if res:
+            base = 4 if {g["t1"], g["t2"]} <= r1_winners else 6
+            place[res[0]], place[res[1]] = base + 1, base + 2
     return place if len(place) == 8 else None
 
 
@@ -318,10 +330,10 @@ w14 = np.where(g(S15, s1) > g(S15, s4), s1, s4); l14 = np.where(w14 == s1, s4, s
 w23 = np.where(g(S15, s2) > g(S15, s3), s2, s3); l23 = np.where(w23 == s2, s3, s2)
 champ = np.where(g(S16, w14) > g(S16, w23), w14, w23); runner = np.where(champ == w14, w23, w14)
 third = np.where(g(S16, l14) > g(S16, l23), l14, l23); fourth = np.where(third == l14, l23, l14)
-# toilet bowl: round-1 losers advance; the loser of the week-16 toilet bowl game takes the bowl (pick 2.09)
-t58 = np.where(g(S15, s5) > g(S15, s8), s8, s5)
-t67 = np.where(g(S15, s6) > g(S15, s7), s7, s6)
-cons = np.where(g(S16, t58) > g(S16, t67), t67, t58)
+# Toilet Bowl: round-1 winners meet for pick 2.09 (round-1 losers play for last place and the punishment)
+t58 = np.where(g(S15, s5) > g(S15, s8), s5, s8)
+t67 = np.where(g(S15, s6) > g(S15, s7), s6, s7)
+cons = np.where(g(S16, t58) > g(S16, t67), t58, t67)
 # draft slots
 slot = np.zeros((n, T), dtype=int)
 non = order[:, 4:]
@@ -370,7 +382,7 @@ def records_for(weeks_rows, top=10):
 for season, S in out["seasons"].items():
     Lx = S.pop("_L"); S.pop("_proj"); S.pop("_sc")
     stand = standings(S)
-    place = bracket_results(Lx) if S["status"] == "complete" else None
+    place = bracket_results(Lx, S) if S["status"] == "complete" else None
     for x in stand:
         if season == cur:
             o = odds[x["rid"]]
@@ -412,7 +424,7 @@ for season, S in out["seasons"].items():
                 board.append({"round": rnd, "slot": 9, "comp": kind, "orig": dist[0][1], "owner": dist[0][1],
                               "prob": dist[0][0], "cands": [{"rid": r, "p": round(p, 4)} for p, r in dist if p > 0.0005]})
     else:
-        cons_w = next(g_["w"] for g_ in Lx["losers_bracket"] if g_.get("p") == 1)
+        cons_w = next(r for r, p_ in place.items() if p_ == 5)  # Toilet Bowl winner
         order_, consw, lbaw = draft_order(stand, place, cons_w)
         for rnd in range(1, rounds + 1):
             for k, orig in enumerate(order_):

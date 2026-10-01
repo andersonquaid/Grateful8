@@ -19,7 +19,7 @@ A GitHub Action (`.github/workflows/refresh.yml`) runs every Tuesday at 5:03 AM 
 ## League rules the page encodes
 
 - Rookie draft picks 1–4: non-playoff teams, lowest Max PF first. Picks 5–8: playoff finish, champion picks 8th. During the season the Draft tab shows the order "if the season ended today."
-- 2.09 goes to the Toilet Bowl winner. Round-1 losers advance; the loser of the Toilet Bowl final takes it.
+- 2.09 goes to the Toilet Bowl winner: round-1 winners meet in the final. Round-1 losers play for last place, and the loser takes the punishment. (Sleeper tracks this bracket losers-advance for the punishment, so the build reads winners from scores.)
 - 3.09 goes to the team with the most points against in the regular season.
 
 The build follows the league into new seasons through Sleeper's `previous_league_id` chain. Before a new season's first game there are no matchups yet, so the page may need a check then.
