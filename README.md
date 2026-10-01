@@ -14,6 +14,7 @@ A GitHub Action (`.github/workflows/refresh.yml`) runs every Tuesday at 5:03 AM 
 - `build/collect_sleeper.py`: pulls league, rosters, matchups, brackets, traded picks, players and weekly projections into `sleeper.json`
 - `build/build_league.py`: standings, records, draft order and a 20,000-season simulation (used for the projected-season toggle)
 - `build/build_league_edition.py` + `build/league_template.html`: builds the page
+- `build/league_admin.json`: League Admin tab content (important dates, rules, rule votes, dues and payouts) from the Official League Rulebook v2026 and the 2026 season calendar. Edit this file to change that tab; weekly high-score winners fill in automatically.
 
 ## League rules the page encodes
 

@@ -98,8 +98,25 @@ for s, S in L["seasons"].items():
         "brackets": brackets(s, S),
     }
 
+# League Admin tab: static rulebook content plus live payout tracking for the rulebook's season
+ADMIN = json.load(open("league_admin.json")) if os.path.exists("league_admin.json") else None
+admin_live = None
+if ADMIN and ADMIN["season"] in L["seasons"]:
+    S = L["seasons"][ADMIN["season"]]
+    weekly = []
+    for wk in S["weeks"]:
+        if wk["w"] <= min(S["reg_weeks"], S["last_scored"]):
+            rows = [r for r in wk["rows"] if r.get("pts")]
+            if rows:
+                hi = max(r["pts"] for r in rows)
+                weekly.append({"w": wk["w"], "rids": [r["rid"] for r in rows if r["pts"] == hi], "pts": hi})
+    lead = max(S["standings"], key=lambda x: x["pf"])
+    admin_live = {"weekly": weekly, "reg_weeks": S["reg_weeks"], "last_scored": S["last_scored"], "status": S["status"],
+                  "pf_leader": {"rid": lead["rid"], "pf": lead["pf"]},
+                  "places": {str(x["final_place"]): x["rid"] for x in S["standings"] if x.get("final_place")}}
+
 meta = {k: L["meta"][k] for k in ("pulled_at", "current_season", "current_week", "league_name", "scoring")}
-data = {"meta": meta, "seasons": seasons, "alltime": L["alltime"], "owners": L["owners"]}
+data = {"meta": meta, "seasons": seasons, "alltime": L["alltime"], "owners": L["owners"], "admin": ADMIN, "admin_live": admin_live}
 txt = json.dumps(data, separators=(",", ":")).replace("</", "<\\/")
 html = open("league_template.html").read().replace("/*__LEAGUE_DATA__*/", txt)
 STANDALONE_HEAD = (
