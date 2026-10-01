@@ -204,9 +204,6 @@ tr.round-break td{border-top:2px solid var(--line-strong)}
 .card.rule ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;line-height:1.45}
 .card ol.yearly li,.card.rule ul li{display:list-item}
 .card ol.yearly li::marker{color:var(--faint);font-weight:600}
-.votes{display:flex;flex-direction:column;gap:8px}
-.votes td{white-space:normal}
-.votes td:last-child{white-space:nowrap;color:var(--muted)}
 .facts{display:flex;flex-wrap:wrap;gap:10px 28px}
 .facts>div{display:flex;flex-direction:column;gap:2px;min-width:0}
 .facts>div>span:last-child{font-weight:600}
@@ -219,10 +216,6 @@ tr.round-break td{border-top:2px solid var(--line-strong)}
 .money.sm{font-size:18px}
 .hl-t{color:var(--hl-ink);background:var(--hl-row);border-radius:4px;padding:0 4px}
 table.wk td,table.wk th{padding:6px 6px}
-.earned{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.earned li{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-weight:600}
-.earned li:first-child{border-top:0}
-.earned li.hl{background:var(--hl-row);color:var(--hl-ink);border-radius:6px;margin-inline:-6px;padding-inline:6px;box-shadow:inset 3px 0 0 var(--hl)}
 .foot{color:var(--muted);font-size:12.5px;line-height:1.55;padding:0 2px}
 @media (max-width:640px){
   /* compact sticky header: name + highlighter on one row, tabs spread across */
@@ -571,9 +564,7 @@ function adminPage(){
       <div class="card"><h3>Every year</h3><div class="desc">How the league calendar runs</div><ol class="yearly">${A.yearly.map(y=>`<li>${esc(y)}</li>`).join("")}</ol></div></div>`;
   } else if(state.asub==="rules"){
     title="League Rules"; note="Official League Rulebook, 2026 edition.";
-    body=`<div class="cards">${A.rules.map(r=>`<div class="card rule"><h3>${esc(r.title)}</h3><ul>${r.items.map(it=>`<li>${esc(it)}</li>`).join("")}</ul></div>`).join("")}</div>
-      <div class="votes"><div class="eyebrow">Rule change votes</div>
-      <div class="tw"><table><thead><tr><th>Proposal</th><th>Vote</th></tr></thead><tbody>${A.votes.map(v=>`<tr><td>${esc(v.proposal)}</td><td>${esc(v.result)}</td></tr>`).join("")}</tbody></table></div></div>`;
+    body=`<div class="cards">${A.rules.map(r=>`<div class="card rule"><h3>${esc(r.title)}</h3><ul>${r.items.map(it=>`<li>${esc(it)}</li>`).join("")}</ul></div>`).join("")}</div>`;
   } else {
     const D=A.dues, P=A.payouts, T=teamsOf(A.season);
     const nm=rid=>T[rid]?T[rid].name:"?", oid=rid=>T[rid]?T[rid].owner_id:null;
@@ -590,9 +581,6 @@ function adminPage(){
     const wk=(X&&X.weekly)||[], W=P.weekly;
     const wkRows=wk.map(r=>`<tr class="${r.rids.some(x=>hl(oid(x)))?"hl":""}"><td>Wk ${r.w}</td><td>${r.rids.map(x=>esc(nm(x))).join(" & ")}${r.rids.length>1?' <span class="chip">split</span>':""}</td><td class="n">${f2(r.pts)}</td><td class="n">${money(W.amount/r.rids.length)}</td></tr>`).join("");
     const left=W.weeks-wk.length;
-    const earned={}; wk.forEach(r=>r.rids.forEach(x=>earned[x]=(earned[x]||0)+W.amount/r.rids.length));
-    if(done) P.places.forEach(p=>{ const rid=X.places[String(p.place)]; if(rid&&p.amount) earned[rid]=(earned[rid]||0)+p.amount; });
-    const earnedRows=Object.entries(earned).sort((a,b)=>b[1]-a[1]).map(([rid,v])=>`<li class="${hl(oid(+rid))}"><span>${esc(nm(+rid))}</span><span class="money sm">${money(v)}</span></li>`).join("");
     const lead=X&&X.pf_leader;
     title=`${A.season} Payouts`; note="From the Official League Rulebook. Weekly winners update with each refresh.";
     body=`${facts}<div class="cards pay">
@@ -602,8 +590,7 @@ function adminPage(){
         ${left>0?`<p class="muted" style="margin:0;font-size:13px">${money(left*W.amount)} still to win over ${left} week${left===1?"":"s"}.</p>`:""}</div>
       <div class="card"><h3>${esc(P.season_high.label)}</h3><div class="desc">${esc(P.season_high.amount_text)}</div>
         ${lead?`<div class="place"><span class="pl-l"><b class="${hl(oid(lead.rid))?"hl-t":""}">${esc(nm(lead.rid))}</b><small>${X.last_scored>=X.reg_weeks?"Final":"Leading through Week "+X.last_scored}</small></span><span class="money sm">${f2(lead.pf)}</span></div>`:""}
-        <h3 style="margin-top:6px">Paid out so far</h3><div class="desc">${done?"Weekly high scores and final standings":"Weekly high scores to date"}</div>
-        ${earnedRows?`<ul class="earned">${earnedRows}</ul>`:`<p class="muted">Nothing paid yet.</p>`}</div></div>`;
+      </div></div>`;
   }
   return `<div class="page"><div class="bar-row rec-bar"><div class="pills" role="group" aria-label="League admin section">${pills}</div></div>
   <section class="panel"><div class="panel-h"><div><div class="eyebrow">League admin</div><h2>${esc(title)}</h2><div class="muted" style="font-size:12.5px;margin-top:2px">${esc(note)}</div></div></div>
