@@ -147,6 +147,8 @@ tr.hl td.sk0,tr.hl td.sk1,tbody tr.hl:hover td.sk0,tbody tr.hl:hover td.sk1{back
 .rules{color:var(--muted);font-size:12.5px;display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 10px;padding:0;list-style:none}
 .rules li::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--line-strong);margin-right:6px;vertical-align:1px}
 td.pick{font-family:var(--font-display);font-weight:700;font-size:15px;width:64px}
+th.ovr,td.ovr{width:64px;text-align:center}
+td.ovr{color:var(--muted);font-variant-numeric:tabular-nums}
 tr.round-break td{border-top:2px solid var(--line-strong)}
 .draft-t{max-width:720px}
 .draft-t td{white-space:normal}
@@ -408,6 +410,7 @@ function bracketsPage(){
 function draftPage(){
   const s=state.draft, S=LG.seasons[s], D=S.draft, T=CT, live=s===CUR;
   const seg = SEASONS.map(x=>`<button data-draft="${x}" aria-pressed="${state.draft===x}">${LG.seasons[x].draft.season} draft${x===CUR?" · projected":""}</button>`).join("");
+  const overall = new Map(D.board.map((b,i)=>[b,i+1]));  // 1–34 in draft order, comp picks included
   const vis = D.board.filter(b=>state.showFullDraft || b.round===1 || b.comp);
   const rowsHtml = vis.map((b,i)=>{
     const pick = `${b.round}.${String(b.slot).padStart(2,"0")}`;
@@ -421,7 +424,7 @@ function draftPage(){
       ownerCell = teamCell(own);
     } else { origCell = teamCell(orig); ownerCell = teamCell(own); }
     const brk = i>0 && vis[i-1].round!==b.round ? "round-break" : "";
-    return `<tr class="${brk} ${own?hl(own.owner_id):""}"><td class="pick">${pick}</td><td>${origCell}</td><td>${ownerCell}</td></tr>`;
+    return `<tr class="${brk} ${own?hl(own.owner_id):""}"><td class="pick">${pick}</td><td class="ovr">${overall.get(b)}</td><td>${origCell}</td><td>${ownerCell}</td></tr>`;
   }).join("");
   const sel = state.team ? ownerTeam(state.team) : null;
   const held = sel ? D.board.filter(b=>b.owner!=null && T[b.owner].owner_id===state.team).map(b=>`${b.round}.${String(b.slot).padStart(2,"0")}`) : [];
@@ -433,7 +436,7 @@ function draftPage(){
   <section class="panel"><div class="panel-h"><div><div class="eyebrow">${D.season} rookie draft · ${live?"if the season ended today":"final order"}</div><h2>Draft Order</h2></div>
   <button class="toggle-btn" id="draft-toggle" aria-expanded="${state.showFullDraft}">${state.showFullDraft?"Show round 1 only":"Show full draft ("+D.rounds+" rounds)"}</button></div>
   <div class="panel-b"><ul class="rules">${rules}</ul>
-  <div class="tw draft-t"><table><thead><tr><th>Pick</th><th>Original owner</th><th>Current owner</th></tr></thead><tbody>${rowsHtml}</tbody></table></div></div></section></div>`;
+  <div class="tw draft-t"><table><thead><tr><th>Pick</th><th class="ovr" title="Overall pick number">Overall</th><th>Original owner</th><th>Current owner</th></tr></thead><tbody>${rowsHtml}</tbody></table></div></div></section></div>`;
 }
 
 /* ---------- record books ---------- */
