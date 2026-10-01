@@ -1,14 +1,6 @@
 {
   "season": "2026",
   "source": "Official League Rulebook v2026 and the Gr8tful 8 2026 Season sheet",
-  "dues": {
-    "buy_in": 130,
-    "parlay": 20,
-    "teams": 8,
-    "pay_to": "Commissioner Quaid Anderson",
-    "methods": "Venmo or cash, paid in full",
-    "future_picks": "Dues for any future-year pick you trade for are due at the time of the trade."
-  },
   "payouts": {
     "places": [
       {

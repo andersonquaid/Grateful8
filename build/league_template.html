@@ -204,9 +204,6 @@ tr.round-break td{border-top:2px solid var(--line-strong)}
 .card.rule ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;line-height:1.45}
 .card ol.yearly li,.card.rule ul li{display:list-item}
 .card ol.yearly li::marker{color:var(--faint);font-weight:600}
-.facts{display:flex;flex-wrap:wrap;gap:10px 28px}
-.facts>div{display:flex;flex-direction:column;gap:2px;min-width:0}
-.facts>div>span:last-child{font-weight:600}
 .place{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
 .place:first-of-type{border-top:0}
 .pl-l{display:flex;flex-direction:column;min-width:0;line-height:1.3}
@@ -566,14 +563,8 @@ function adminPage(){
     title="League Rules"; note="Official League Rulebook, 2026 edition.";
     body=`<div class="cards">${A.rules.map(r=>`<div class="card rule"><h3>${esc(r.title)}</h3><ul>${r.items.map(it=>`<li>${esc(it)}</li>`).join("")}</ul></div>`).join("")}</div>`;
   } else {
-    const D=A.dues, P=A.payouts, T=teamsOf(A.season);
+    const P=A.payouts, T=teamsOf(A.season);
     const nm=rid=>T[rid]?T[rid].name:"?", oid=rid=>T[rid]?T[rid].owner_id:null;
-    const pool=D.buy_in*D.teams;
-    const facts=`<div class="facts">
-      <div><span class="eyebrow">Buy-in</span><span>${money(D.buy_in)} + ${money(D.parlay)} weekly parlay</span></div>
-      <div><span class="eyebrow">Prize pool</span><span>${money(pool)} (${D.teams} × ${money(D.buy_in)})</span></div>
-      <div><span class="eyebrow">Pay</span><span>${esc(D.pay_to)} · ${esc(D.methods)}</span></div></div>
-      <p class="muted" style="margin:0;font-size:13px">${esc(D.future_picks)}</p>`;
     const done=X&&X.status==="complete";
     const places=P.places.map(p=>{ const rid=X&&X.places?X.places[String(p.place)]:null;
       const who=p.place<=3?(rid?`<b class="${hl(oid(rid))?"hl-t":""}">${esc(nm(rid))}</b>`:`<span class="faint">TBD after Week 16</span>`):"";
@@ -583,7 +574,7 @@ function adminPage(){
     const left=W.weeks-wk.length;
     const lead=X&&X.pf_leader;
     title=`${A.season} Payouts`; note="From the Official League Rulebook. Weekly winners update with each refresh.";
-    body=`${facts}<div class="cards pay">
+    body=`<div class="cards pay">
       <div class="card"><h3>Final standings</h3><div class="desc">Paid after the championship</div>${places}</div>
       <div class="card"><h3>${esc(W.label)}</h3><div class="desc">${money(W.amount)} a week, Weeks 1–${W.weeks}</div>
         ${wk.length?`<div class="tw"><table class="wk"><thead><tr><th>Week</th><th>Manager</th><th class="n">Score</th><th class="n">Paid</th></tr></thead><tbody>${wkRows}</tbody></table></div>`:`<p class="muted">No weeks played yet.</p>`}
