@@ -1,0 +1,626 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="description" content="GRateful 8 standings, brackets, draft order and record books."><meta property="og:title" content="GRateful 8 League Hub"><meta property="og:description" content="Standings, brackets, draft order and record books, refreshed weekly from Sleeper."><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%232447c4%22/%3E%3Ctext x=%2216%22 y=%2223%22 font-family=%22Arial%22 font-weight=%22700%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22white%22%3E8%3C/text%3E%3C/svg%3E"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>GRateful 8 League Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Layout: sticky top bar (league identity, team highlighter, three page tabs); each page is a
+   control row plus one full-width panel inside a 1240px column. Same visual system as the Front Office. */
+:root{
+  --bg:#eef1f6; --surface:#ffffff; --surface-2:#f6f8fb; --ink:#131a2b; --muted:#5a6479; --faint:#8b93a6;
+  --line:#dfe4ec; --line-strong:#c7cfdb;
+  --accent:#2447c4; --accent-soft:#e3e9fb; --accent-ink:#1b3597;
+  --hl:#c98500; --hl-row:#fff2cc; --hl-ink:#7a4f00;
+  --vs:#8a4fe0; --vs-row:#f1eafd; --vs-ink:#5b2aae;
+  --good:#12803d; --good-soft:#e2f4e8; --bad:#c2372e; --bad-soft:#fbe7e5; --warn:#a86500; --warn-soft:#fbefd9;
+  --qb:#d6336c; --rb:#0f9488; --wr:#2f6fdb; --te:#d9770a;
+  --font-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --font-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --live:#12a150; --live-ring:rgba(18,161,80,.22);
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1019; --surface:#141a26; --surface-2:#1a2130; --ink:#e7ebf3; --muted:#a0a9bc; --faint:#78819a;
+  --line:#252d3d; --line-strong:#344058;
+  --accent:#8aa2ff; --accent-soft:#1f2a4a; --accent-ink:#b7c6ff;
+  --hl:#f0b24a; --hl-row:#33290f; --hl-ink:#ffd58a;
+  --vs:#b794f6; --vs-row:#2a2142; --vs-ink:#d9c7ff;
+  --good:#4cc57a; --good-soft:#15291e; --bad:#ff7a70; --bad-soft:#331a1a; --warn:#f0b24a; --warn-soft:#30250f;
+  --qb:#f06595; --rb:#2fc3b5; --wr:#6d9df5; --te:#f59f3a;  --live:#3ddc84; --live-ring:rgba(61,220,132,.28); color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0c1019; --surface:#141a26; --surface-2:#1a2130; --ink:#e7ebf3; --muted:#a0a9bc; --faint:#78819a;
+  --line:#252d3d; --line-strong:#344058;
+  --accent:#8aa2ff; --accent-soft:#1f2a4a; --accent-ink:#b7c6ff;
+  --hl:#f0b24a; --hl-row:#33290f; --hl-ink:#ffd58a;
+  --vs:#b794f6; --vs-row:#2a2142; --vs-ink:#d9c7ff;
+  --good:#4cc57a; --good-soft:#15291e; --bad:#ff7a70; --bad-soft:#331a1a; --warn:#f0b24a; --warn-soft:#30250f;
+  --qb:#f06595; --rb:#2fc3b5; --wr:#6d9df5; --te:#f59f3a;  --live:#3ddc84; --live-ring:rgba(61,220,132,.28); color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.45;margin:0}
+.num,td.n,th.n{font-variant-numeric:tabular-nums}
+button,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-in{max-width:1240px;margin:0 auto;padding:10px 16px 0;display:flex;flex-direction:column;gap:8px}
+.brand{display:flex;align-items:center;gap:6px 12px;flex-wrap:wrap}
+.brand h1{font-family:var(--font-display);font-weight:700;font-size:26px;letter-spacing:.3px;margin:0;line-height:1}
+.brand h1 span{color:var(--accent)}
+.brand .sub{color:var(--muted);font-size:13px}
+.pick-team{margin-left:auto;display:flex;align-items:center;gap:8px}
+.pick-team select{appearance:none;-webkit-appearance:none;border:1px solid var(--line-strong);border-radius:8px;padding:6px 30px 6px 10px;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238b93a6' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 10px center;font-weight:600;font-size:13.5px;cursor:pointer;min-width:150px}
+.pick-team select.on{border-color:var(--hl);background-color:var(--hl-row);color:var(--hl-ink)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:8px 12px 10px;font-family:var(--font-display);font-weight:600;font-size:16px;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.sm-only{display:none}
+
+main{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:18px 48px;display:flex;flex-direction:column;gap:18px}
+.page{display:flex;flex-direction:column;gap:14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);min-width:0}
+.panel-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.panel-h h2{font-family:var(--font-display);font-weight:700;font-size:21px;letter-spacing:.3px;margin:0;text-transform:uppercase;line-height:1.1}
+.panel-h .note{color:var(--muted);font-size:12.5px;max-width:62ch}
+.panel-b{padding:12px 16px 16px;min-width:0}
+.eyebrow{font-family:var(--font-display);font-weight:600;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
+
+/* controls */
+.bar-row{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line-strong);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:6px 12px;cursor:pointer;font-weight:600;font-size:13px;color:var(--muted)}
+.seg button+button{border-left:1px solid var(--line-strong)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"]{color:#0c1019}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:#0c1019}}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pc{border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:5px 13px;cursor:pointer;font-weight:600;font-size:13px;color:var(--muted)}
+.pc:hover{color:var(--ink)}
+.pc[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.hl-note{font-size:12.5px;color:var(--hl-ink);background:var(--hl-row);border:1px solid var(--hl);border-radius:999px;padding:2px 10px;font-weight:600}
+.hl-note:empty{display:none}
+
+/* tables */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+th,td{padding:7px 8px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{font-family:var(--font-display);font-weight:600;font-size:12.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);background:var(--surface-2);position:sticky;top:0;z-index:1}
+th.n,td.n{text-align:right}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:var(--ink)}
+th .arr{display:inline-block;width:10px;color:var(--accent)}
+tbody tr:hover td{background:var(--surface-2)}
+tr.hl td,tbody tr.hl:hover td{background:var(--hl-row)}
+tr.hl td:first-child{box-shadow:inset 3px 0 0 var(--hl)}
+th.sk0,td.sk0{position:sticky;left:0;z-index:2;background:var(--surface);width:44px;min-width:44px;max-width:44px}
+th.sk1,td.sk1{position:sticky;left:44px;z-index:2;background:var(--surface);box-shadow:inset -1px 0 0 var(--line)}
+th.sk0,th.sk1{background:var(--surface-2);z-index:3}
+tbody tr:hover td.sk0,tbody tr:hover td.sk1{background:var(--surface-2)}
+tr.hl td.sk0,tr.hl td.sk1,tbody tr.hl:hover td.sk0,tbody tr.hl:hover td.sk1{background:var(--hl-row)}
+.team{display:flex;flex-direction:column;line-height:1.2;max-width:260px}
+.team b{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.team small{color:var(--muted);font-size:12px}
+.rank{font-family:var(--font-display);font-weight:700;font-size:17px;width:28px;text-align:center}
+.muted{color:var(--muted)}
+.faint{color:var(--faint)}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:600;line-height:18px;border:1px solid var(--line-strong);color:var(--muted);background:var(--surface)}
+.chip.warn{border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
+.pos{display:inline-block;min-width:26px;text-align:center;border-radius:4px;font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:.4px;color:#fff;padding:0 4px;line-height:18px}
+.pos.QB{background:var(--qb)} .pos.RB{background:var(--rb)} .pos.WR{background:var(--wr)} .pos.TE{background:var(--te)}
+:root[data-theme="dark"] .pos{color:#0c1019}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pos{color:#0c1019}}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);align-items:center}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px;border:1px solid var(--line-strong)}
+.sw.vs{background:var(--vs-row);box-shadow:inset 3px 0 0 var(--vs);border-color:transparent}
+.cdot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--live);box-shadow:0 0 0 2.5px var(--live-ring);flex:none}
+.legend .cdot{margin:0 7px 0 2px;vertical-align:0}
+.sw.hl{background:var(--hl-row);box-shadow:inset 3px 0 0 var(--hl);border-color:transparent}
+
+/* record cards */
+.cards{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+@media (min-width:900px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.card{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card h3{margin:0;font-family:var(--font-display);font-weight:600;font-size:15.5px;letter-spacing:.5px;text-transform:uppercase}
+.card .desc{color:var(--muted);font-size:12px;margin-top:-4px}
+.card ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.card li{display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:8px;align-items:start;font-size:13px}
+.card li .i{color:var(--faint);font-family:var(--font-display);font-weight:700;display:grid;grid-template-columns:18px 9px;column-gap:6px;align-items:center;line-height:1.25}
+.card li .who{min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.card li .who b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card li .who small{color:var(--muted);font-size:12px}
+.card li .v{font-weight:600;font-variant-numeric:tabular-nums}
+
+.card li.hl{background:var(--hl-row);border-radius:6px;margin-inline:-6px;padding-inline:6px;box-shadow:inset 3px 0 0 var(--hl)}
+.card li.hl .who b{color:var(--hl-ink)}
+.card li.hl .i{color:var(--hl-ink)}
+.card li.vs{background:var(--vs-row);border-radius:6px;margin-inline:-6px;padding-inline:6px;box-shadow:inset 3px 0 0 var(--vs)}
+.card li.vs .i{color:var(--vs-ink)}
+.card li .who small .vs-n{color:var(--vs-ink);font-weight:600}
+.hl-note .vs-c{color:var(--vs-ink)}
+.res{display:inline-block;min-width:16px;text-align:center;border-radius:4px;font-size:11px;font-weight:700;line-height:16px;margin-left:4px}
+.res.w{color:var(--good);background:var(--good-soft)} .res.l{color:var(--bad);background:var(--bad-soft)}
+.proj-tag{font-size:10.5px;font-weight:600;letter-spacing:.4px;color:var(--muted);text-transform:uppercase;margin-left:4px}
+
+/* draft */
+.toggle-btn{border:1px solid var(--line-strong);background:var(--surface);border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:600;font-size:13px}
+.rules{color:var(--muted);font-size:12.5px;display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 10px;padding:0;list-style:none}
+.rules li::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--line-strong);margin-right:6px;vertical-align:1px}
+td.pick{font-family:var(--font-display);font-weight:700;font-size:15px;width:64px}
+th.ovr,td.ovr{width:64px;text-align:center}
+td.ovr{color:var(--muted);font-variant-numeric:tabular-nums}
+tr.round-break td{border-top:2px solid var(--line-strong)}
+.draft-t{max-width:720px}
+.draft-t td{white-space:normal}
+.draft-t td.pick{white-space:nowrap}
+
+/* brackets */
+.bk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:14px}
+.bk{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr);row-gap:12px}
+.bk .rh{font-family:var(--font-display);font-weight:600;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
+.m{border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden;min-width:0}
+.m.main{border-color:var(--line-strong);box-shadow:0 1px 0 var(--line-strong)}
+.m .ml{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;font-weight:600;color:var(--muted);padding:5px 10px;background:var(--surface-2);border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.5px}
+.m.main .ml{color:var(--ink)}
+.tm{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 10px;font-size:13.5px;min-height:36px}
+.tm+.tm{border-top:1px solid var(--line)}
+.tm .sd{font-family:var(--font-display);font-weight:700;color:var(--faint);text-align:center}
+.tm .nm{display:flex;align-items:center;gap:6px;min-width:0}
+.tm .nm b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm .sc{font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}
+.tm.win .sc{color:var(--ink);font-weight:700}
+.tm.lose .nm b{color:var(--muted);font-weight:500}
+.tm.tbd .nm{color:var(--faint);font-size:12.5px}
+.tm.hl{background:var(--hl-row);box-shadow:inset 3px 0 0 var(--hl)}
+.tm.hl .nm b,.tm.hl .sd{color:var(--hl-ink)}
+.chip.acc{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
+.conn{position:relative}
+.conn::before{content:"";position:absolute;left:0;right:50%;top:calc(25% - 3px);bottom:calc(25% - 3px);border:2px solid var(--line-strong);border-left:0;border-radius:0 6px 6px 0}
+.conn::after{content:"";position:absolute;left:50%;right:0;top:50%;border-top:2px solid var(--line-strong)}
+@media (max-width:560px){
+  .bk{grid-template-columns:minmax(0,1fr);row-gap:8px}
+  .bk>*{grid-column:1!important;grid-row:auto!important}
+  .bk .conn{display:none}
+  .bk .rh.r2{margin-top:8px}
+}
+
+/* league admin */
+.admin{display:flex;flex-direction:column;gap:16px}
+.admin-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.admin-grid{grid-template-columns:minmax(0,1fr)}}
+.dates-col{display:flex;flex-direction:column;gap:10px;align-items:flex-start;min-width:0}
+.dates{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;align-self:stretch}
+.dates li{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.dates li:first-child{border-top:0}
+.dt-when b{display:block;font-family:var(--font-display);font-weight:700;font-size:17px;line-height:1.1;font-variant-numeric:tabular-nums}
+.dt-when small{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.7px}
+.dt-what{min-width:0;display:flex;flex-direction:column;line-height:1.3}
+.dt-what b{font-weight:600}
+.dt-what span{color:var(--muted);font-size:13px}
+.dt-what small{color:var(--faint);font-size:12px}
+.dt-st{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.dates li.past .dt-when b,.dates li.past .dt-what b{color:var(--muted);font-weight:500}
+.dates li.next{background:var(--accent-soft);border-radius:8px;margin-inline:-10px;padding-inline:10px;border-top-color:transparent}
+.dates li.next+li{border-top-color:transparent}
+.card ol.yearly{margin:0;padding-left:20px;list-style:decimal;display:flex;flex-direction:column;gap:7px;font-size:13.5px;line-height:1.45}
+.card.rule ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;line-height:1.45}
+.card ol.yearly li,.card.rule ul li{display:list-item}
+.card ol.yearly li::marker{color:var(--faint);font-weight:600}
+.place{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.place:first-of-type{border-top:0}
+.pl-l{display:flex;flex-direction:column;min-width:0;line-height:1.3}
+.pl-l small{color:var(--muted);font-size:12.5px}
+.place.zero .money{color:var(--faint)}
+.money{font-family:var(--font-display);font-weight:700;font-size:22px;font-variant-numeric:tabular-nums}
+.money.sm{font-size:18px}
+.hl-t{color:var(--hl-ink);background:var(--hl-row);border-radius:4px;padding:0 4px}
+table.wk td,table.wk th{padding:6px 6px}
+.foot{color:var(--muted);font-size:12.5px;line-height:1.55;padding:0 2px}
+@media (max-width:640px){
+  /* compact sticky header: name + highlighter on one row, tabs spread across */
+  .top-in{padding:8px 16px 0;gap:2px}
+  .brand{flex-wrap:nowrap;gap:10px}
+  .brand h1{font-size:20px;white-space:nowrap}
+  .brand .sub{display:none}
+  .pick-team{margin-left:auto;min-width:0}
+  .pick-team select{min-width:0;max-width:48vw;font-size:14px;padding:8px 28px 8px 10px}
+  .tabs{gap:0}
+  .tab{flex:1 1 auto;text-align:center;font-size:15px;letter-spacing:.2px;padding:10px 2px 11px}
+  .dates li{grid-template-columns:52px minmax(0,1fr);row-gap:4px}
+  .dt-st{grid-column:2}
+  .dates li.past .dt-st{display:none}
+  .card.rule ul,.yearly{font-size:14.5px}
+  .lg-only{display:none} .sm-only{display:inline}
+  /* larger type and roomier controls */
+  body{font-size:15px}
+  main{padding-block:14px 40px;gap:14px}
+  .page{gap:12px}
+  .panel-h{padding:14px 14px 10px}
+  .panel-h .note,.panel-h .muted{font-size:13px}
+  .panel-b{padding:10px 14px 14px}
+  .seg{display:flex;width:100%}
+  .seg button{flex:1 1 0;padding:9px 8px;font-size:14px}
+  .rec-bar{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+  .pills{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px;scroll-padding-inline:16px;gap:8px;scroll-snap-type:x proximity}
+  .pills::-webkit-scrollbar{display:none}
+  .pc{flex:none;padding:8px 14px;font-size:14px;scroll-snap-align:start;white-space:nowrap}
+  .rec-bar .hl-note{align-self:flex-start}
+  .hl-note{font-size:13px}
+  table{font-size:14px}
+  th,td{padding:10px 10px}
+  th{font-size:13px}
+  td.pick{font-size:16px}
+  .rules{font-size:13px}
+  .toggle-btn{padding:8px 12px;font-size:14px}
+  /* record cards: one column, no nested boxes */
+  .cards{gap:0}
+  .card{border:0;border-radius:0;padding:16px 0 14px;border-top:1px solid var(--line);gap:10px}
+  .card:first-child{border-top:0;padding-top:6px}
+  .card h3{font-size:17px}
+  .card .desc{font-size:13px}
+  .card ol{gap:10px}
+  .card li{font-size:15px;grid-template-columns:30px minmax(0,1fr) auto;gap:8px}
+  .card li .i{grid-template-columns:15px 9px;column-gap:5px}
+  .card li .who small{font-size:13px}
+  .card li .v{font-size:15px}
+  /* brackets */
+  .tm{font-size:15px;min-height:44px}
+  .m .ml{font-size:12px}
+  .foot{font-size:13px}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <h1>GRateful <span>8</span> League Hub</h1>
+      <span class="sub" id="freshness"></span>
+      <label class="pick-team"><select id="team-sel" aria-label="Highlight a team"></select></label>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Pages">
+      <button class="tab" role="tab" data-tab="standings">Standings</button>
+      <button class="tab" role="tab" data-tab="brackets">Brackets</button>
+      <button class="tab" role="tab" data-tab="draft"><span class="lg-only">Draft Order</span><span class="sm-only">Draft</span></button>
+      <button class="tab" role="tab" data-tab="records"><span class="lg-only">Record Books</span><span class="sm-only">Records</span></button>
+      <button class="tab" role="tab" data-tab="admin"><span class="lg-only">League Admin</span><span class="sm-only">Admin</span></button>
+    </nav>
+  </div>
+</header>
+<main id="app"></main>
+
+<script id="data" type="application/json">{"meta":{"pulled_at":"2026-10-06T10:42:22.540970Z","current_season":"2026","current_week":5,"league_name":"GRateful 8","scoring":"Half PPR, TE +0.5 per reception, 4-pt pass TD"},"seasons":{"2025":{"status":"complete","reg_weeks":14,"last_scored":16,"teams":[{"rid":1,"owner_id":"91642043100971008","owner":"qanderson","team":"Clear Eyes Full Darts"},{"rid":2,"owner_id":"1168251847505760256","owner":"madmax516","team":"POINT 0 FUCKING 6"},{"rid":3,"owner_id":"476494566665482240","owner":"brooklynivory","team":"Mid-tier"},{"rid":4,"owner_id":"472248903123595264","owner":"BoboTheClown","team":"GLIZZY MAGUIRE"},{"rid":5,"owner_id":"1256273784587956224","owner":"PeachBoy666","team":"Peach Pitts"},{"rid":6,"owner_id":"1256325779491397632","owner":"connorwgibbons","team":"JJ Should\u2019veBeenSwallowed"},{"rid":7,"owner_id":"757450519965982720","owner":"willi11s","team":"Biffs ballzy bets"},{"rid":8,"owner_id":"480544283833659392","owner":"mcconneg","team":"Flaccid Penix"}],"standings":[{"rid":1,"w":11,"l":3,"t":0,"pf":1783.62,"pa":1582.3,"maxpf":2180.38,"apw":55.0,"apn":98,"weeks":14,"rank":1,"ap_pct":0.5612,"eff":0.818,"final_place":3},{"rid":7,"w":10,"l":4,"t":0,"pf":1928.9,"pa":1656.5,"maxpf":2390.58,"apw":67.0,"apn":98,"weeks":14,"rank":2,"ap_pct":0.6837,"eff":0.8069,"final_place":4},{"rid":5,"w":8,"l":6,"t":0,"pf":1809.4,"pa":1749.48,"maxpf":2183.3,"apw":56.0,"apn":98,"weeks":14,"rank":3,"ap_pct":0.5714,"eff":0.8287,"final_place":1},{"rid":6,"w":8,"l":6,"t":0,"pf":1730.8,"pa":1730.44,"maxpf":2113.32,"apw":57.0,"apn":98,"weeks":14,"rank":4,"ap_pct":0.5816,"eff":0.819,"final_place":2},{"rid":3,"w":7,"l":7,"t":0,"pf":1542.56,"pa":1698.8,"maxpf":1968.12,"apw":32.0,"apn":98,"weeks":14,"rank":5,"ap_pct":0.3265,"eff":0.7838,"final_place":7},{"rid":4,"w":4,"l":10,"t":0,"pf":1797.06,"pa":1812.8,"maxpf":2316.5,"apw":48.0,"apn":98,"weeks":14,"rank":6,"ap_pct":0.4898,"eff":0.7758,"final_place":8},{"rid":8,"w":4,"l":10,"t":0,"pf":1631.9,"pa":1792.76,"maxpf":1992.94,"apw":38.0,"apn":98,"weeks":14,"rank":7,"ap_pct":0.3878,"eff":0.8188,"final_place":5},{"rid":2,"w":4,"l":10,"t":0,"pf":1594.96,"pa":1796.12,"maxpf":1993.0,"apw":39.0,"apn":98,"weeks":14,"rank":8,"ap_pct":0.398,"eff":0.8003,"final_place":6}],"records":{"high":[{"season":"2025","w":15,"rid":5,"owner_id":"1256273784587956224","pts":207.82,"max":222.7,"opp":7,"opp_pts":161.88,"res":"W","post":true},{"season":"2025","w":7,"rid":7,"owner_id":"757450519965982720","pts":198.66,"max":233.7,"opp":8,"opp_pts":115.74,"res":"W","post":false},{"season":"2025","w":11,"rid":8,"owner_id":"480544283833659392","pts":175.42,"max":195.42,"opp":5,"opp_pts":135.52,"res":"W","post":false},{"season":"2025","w":10,"rid":1,"owner_id":"91642043100971008","pts":170.48,"max":176.94,"opp":2,"opp_pts":137.3,"res":"W","post":false},{"season":"2025","w":10,"rid":6,"owner_id":"1256325779491397632","pts":168.16,"max":189.64,"opp":3,"opp_pts":106.26,"res":"W","post":false},{"season":"2025","w":7,"rid":4,"owner_id":"472248903123595264","pts":167.42,"max":184.7,"opp":5,"opp_pts":120.12,"res":"W","post":false},{"season":"2025","w":16,"rid":5,"owner_id":"1256273784587956224","pts":167.36,"max":216.64,"opp":6,"opp_pts":92.84,"res":"W","post":true},{"season":"2025","w":12,"rid":5,"owner_id":"1256273784587956224","pts":164.66,"max":177.96,"opp":6,"opp_pts":54.26,"res":"W","post":false},{"season":"2025","w":5,"rid":5,"owner_id":"1256273784587956224","pts":164.0,"max":208.2,"opp":6,"opp_pts":149.0,"res":"W","post":false},{"season":"2025","w":15,"rid":7,"owner_id":"757450519965982720","pts":161.88,"max":187.68,"opp":5,"opp_pts":207.82,"res":"L","post":true}],"low":[{"season":"2025","w":12,"rid":6,"owner_id":"1256325779491397632","pts":54.26,"max":76.36,"opp":5,"opp_pts":164.66,"res":"L","post":false},{"season":"2025","w":14,"rid":3,"owner_id":"476494566665482240","pts":74.9,"max":125.12,"opp":1,"opp_pts":109.76,"res":"L","post":false},{"season":"2025","w":8,"rid":8,"owner_id":"480544283833659392","pts":75.24,"max":100.04,"opp":6,"opp_pts":134.28,"res":"L","post":false},{"season":"2025","w":13,"rid":2,"owner_id":"1168251847505760256","pts":75.9,"max":105.4,"opp":8,"opp_pts":128.4,"res":"L","post":false},{"season":"2025","w":3,"rid":3,"owner_id":"476494566665482240","pts":78.22,"max":102.02,"opp":6,"opp_pts":123.84,"res":"L","post":false},{"season":"2025","w":11,"rid":6,"owner_id":"1256325779491397632","pts":78.22,"max":117.52,"opp":1,"opp_pts":99.78,"res":"L","post":false},{"season":"2025","w":6,"rid":5,"owner_id":"1256273784587956224","pts":81.52,"max":139.32,"opp":3,"opp_pts":106.28,"res":"L","post":false},{"season":"2025","w":13,"rid":6,"owner_id":"1256325779491397632","pts":83.8,"max":128.6,"opp":7,"opp_pts":149.14,"res":"L","post":false},{"season":"2025","w":4,"rid":2,"owner_id":"1168251847505760256","pts":85.2,"max":118.0,"opp":3,"opp_pts":144.86,"res":"L","post":false},{"season":"2025","w":10,"rid":7,"owner_id":"757450519965982720","pts":87.12,"max":142.32,"opp":5,"opp_pts":119.02,"res":"L","post":false}],"lucky":[{"season":"2025","w":11,"rid":3,"owner_id":"476494566665482240","pts":92.16,"max":128.42,"opp":2,"opp_pts":90.22,"res":"W","post":false},{"season":"2025","w":11,"rid":1,"owner_id":"91642043100971008","pts":99.78,"max":127.68,"opp":6,"opp_pts":78.22,"res":"W","post":false},{"season":"2025","w":6,"rid":3,"owner_id":"476494566665482240","pts":106.28,"max":148.24,"opp":5,"opp_pts":81.52,"res":"W","post":false},{"season":"2025","w":9,"rid":3,"owner_id":"476494566665482240","pts":109.52,"max":126.0,"opp":8,"opp_pts":108.54,"res":"W","post":false},{"season":"2025","w":14,"rid":1,"owner_id":"91642043100971008","pts":109.76,"max":157.26,"opp":3,"opp_pts":74.9,"res":"W","post":false},{"season":"2025","w":7,"rid":2,"owner_id":"1168251847505760256","pts":110.62,"max":144.28,"opp":6,"opp_pts":108.72,"res":"W","post":false},{"season":"2025","w":2,"rid":1,"owner_id":"91642043100971008","pts":111.5,"max":154.28,"opp":7,"opp_pts":111.42,"res":"W","post":false},{"season":"2025","w":2,"rid":6,"owner_id":"1256325779491397632","pts":115.62,"max":148.28,"opp":4,"opp_pts":97.52,"res":"W","post":false},{"season":"2025","w":14,"rid":6,"owner_id":"1256325779491397632","pts":116.54,"max":138.78,"opp":2,"opp_pts":109.08,"res":"W","post":false},{"season":"2025","w":5,"rid":1,"owner_id":"91642043100971008","pts":116.84,"max":130.3,"opp":8,"opp_pts":96.18,"res":"W","post":false}],"unlucky":[{"season":"2025","w":15,"rid":7,"owner_id":"757450519965982720","pts":161.88,"max":187.68,"opp":5,"opp_pts":207.82,"res":"L","post":true},{"season":"2025","w":4,"rid":6,"owner_id":"1256325779491397632","pts":152.64,"max":185.66,"opp":1,"opp_pts":157.58,"res":"L","post":false},{"season":"2025","w":15,"rid":1,"owner_id":"91642043100971008","pts":152.44,"max":168.74,"opp":6,"opp_pts":152.78,"res":"L","post":true},{"season":"2025","w":6,"rid":7,"owner_id":"757450519965982720","pts":151.58,"max":188.5,"opp":6,"opp_pts":152.94,"res":"L","post":false},{"season":"2025","w":9,"rid":4,"owner_id":"472248903123595264","pts":149.12,"max":186.62,"opp":6,"opp_pts":157.58,"res":"L","post":false},{"season":"2025","w":5,"rid":6,"owner_id":"1256325779491397632","pts":149.0,"max":160.7,"opp":5,"opp_pts":164.0,"res":"L","post":false},{"season":"2025","w":14,"rid":4,"owner_id":"472248903123595264","pts":148.0,"max":191.8,"opp":5,"opp_pts":150.7,"res":"L","post":false},{"season":"2025","w":5,"rid":3,"owner_id":"476494566665482240","pts":144.94,"max":177.42,"opp":7,"opp_pts":152.42,"res":"L","post":false},{"season":"2025","w":10,"rid":2,"owner_id":"1168251847505760256","pts":137.3,"max":169.6,"opp":1,"opp_pts":170.48,"res":"L","post":false},{"season":"2025","w":11,"rid":5,"owner_id":"1256273784587956224","pts":135.52,"max":135.52,"opp":8,"opp_pts":175.42,"res":"L","post":false}],"eff":[{"season":"2025","w":11,"rid":5,"owner_id":"1256273784587956224","pts":135.52,"max":135.52,"opp":8,"opp_pts":175.42,"res":"L","post":false,"eff":1.0},{"season":"2025","w":6,"rid":2,"owner_id":"1168251847505760256","pts":128.14,"max":132.64,"opp":8,"opp_pts":92.54,"res":"W","post":false,"eff":0.9661},{"season":"2025","w":10,"rid":1,"owner_id":"91642043100971008","pts":170.48,"max":176.94,"opp":2,"opp_pts":137.3,"res":"W","post":false,"eff":0.9635},{"season":"2025","w":12,"rid":4,"owner_id":"472248903123595264","pts":149.98,"max":158.52,"opp":2,"opp_pts":111.42,"res":"W","post":false,"eff":0.9461},{"season":"2025","w":5,"rid":7,"owner_id":"757450519965982720","pts":152.42,"max":162.04,"opp":3,"opp_pts":144.94,"res":"W","post":false,"eff":0.9406},{"season":"2025","w":14,"rid":5,"owner_id":"1256273784587956224","pts":150.7,"max":161.2,"opp":4,"opp_pts":148.0,"res":"W","post":false,"eff":0.9349},{"season":"2025","w":15,"rid":5,"owner_id":"1256273784587956224","pts":207.82,"max":222.7,"opp":7,"opp_pts":161.88,"res":"W","post":true,"eff":0.9332},{"season":"2025","w":5,"rid":6,"owner_id":"1256325779491397632","pts":149.0,"max":160.7,"opp":5,"opp_pts":164.0,"res":"L","post":false,"eff":0.9272},{"season":"2025","w":12,"rid":5,"owner_id":"1256273784587956224","pts":164.66,"max":177.96,"opp":6,"opp_pts":54.26,"res":"W","post":false,"eff":0.9253},{"season":"2025","w":9,"rid":7,"owner_id":"757450519965982720","pts":138.1,"max":150.0,"opp":1,"opp_pts":130.6,"res":"W","post":false,"eff":0.9207}],"ineff":[{"season":"2025","w":6,"rid":5,"owner_id":"1256273784587956224","pts":81.52,"max":139.32,"opp":3,"opp_pts":106.28,"res":"L","post":false,"eff":0.5851},{"season":"2025","w":1,"rid":7,"owner_id":"757450519965982720","pts":93.72,"max":156.9,"opp":2,"opp_pts":122.68,"res":"L","post":false,"eff":0.5973},{"season":"2025","w":14,"rid":3,"owner_id":"476494566665482240","pts":74.9,"max":125.12,"opp":1,"opp_pts":109.76,"res":"L","post":false,"eff":0.5986},{"season":"2025","w":10,"rid":7,"owner_id":"757450519965982720","pts":87.12,"max":142.32,"opp":5,"opp_pts":119.02,"res":"L","post":false,"eff":0.6121},{"season":"2025","w":11,"rid":4,"owner_id":"472248903123595264","pts":114.32,"max":186.04,"opp":7,"opp_pts":134.08,"res":"L","post":false,"eff":0.6145},{"season":"2025","w":2,"rid":7,"owner_id":"757450519965982720","pts":111.42,"max":175.18,"opp":1,"opp_pts":111.5,"res":"L","post":false,"eff":0.636},{"season":"2025","w":7,"rid":3,"owner_id":"476494566665482240","pts":96.84,"max":149.3,"opp":1,"opp_pts":129.84,"res":"L","post":false,"eff":0.6486},{"season":"2025","w":13,"rid":6,"owner_id":"1256325779491397632","pts":83.8,"max":128.6,"opp":7,"opp_pts":149.14,"res":"L","post":false,"eff":0.6516},{"season":"2025","w":11,"rid":6,"owner_id":"1256325779491397632","pts":78.22,"max":117.52,"opp":1,"opp_pts":99.78,"res":"L","post":false,"eff":0.6656},{"season":"2025","w":14,"rid":2,"owner_id":"1168251847505760256","pts":109.08,"max":163.0,"opp":6,"opp_pts":116.54,"res":"L","post":false,"eff":0.6692}],"busts":[{"season":"2025","w":16,"rid":4,"opp":3,"post":true,"pid":"4984","player":"Josh Allen","pos":"QB","act":6.9,"proj":22.6,"short":15.7,"margin":13.34},{"season":"2025","w":13,"rid":5,"opp":3,"post":false,"pid":"9488","player":"Jaxon Smith-Njigba","pos":"WR","act":3.3,"proj":18.37,"short":15.07,"margin":10.08},{"season":"2025","w":2,"rid":7,"opp":1,"post":false,"pid":"7591","player":"Justin Fields","pos":"QB","act":3.98,"proj":18.73,"short":14.75,"margin":0.08},{"season":"2025","w":9,"rid":4,"opp":6,"post":false,"pid":"9221","player":"Jahmyr Gibbs","pos":"RB","act":4.3,"proj":18.58,"short":14.28,"margin":8.46},{"season":"2025","w":14,"rid":2,"opp":6,"post":false,"pid":"11566","player":"Jayden Daniels","pos":"QB","act":3.72,"proj":17.32,"short":13.6,"margin":7.46},{"season":"2025","w":7,"rid":6,"opp":2,"post":false,"pid":"2216","player":"Mike Evans","pos":"WR","act":0.0,"proj":13.25,"short":13.25,"margin":1.9},{"season":"2025","w":3,"rid":2,"opp":1,"post":false,"pid":"9997","player":"Zay Flowers","pos":"WR","act":2.3,"proj":14.66,"short":12.36,"margin":9.04},{"season":"2025","w":9,"rid":8,"opp":3,"post":false,"pid":"11620","player":"Rome Odunze","pos":"WR","act":0.0,"proj":11.92,"short":11.92,"margin":0.98},{"season":"2025","w":1,"rid":4,"opp":3,"post":false,"pid":"6770","player":"Joe Burrow","pos":"QB","act":8.82,"proj":20.73,"short":11.91,"margin":10.76},{"season":"2025","w":6,"rid":7,"opp":6,"post":false,"pid":"8146","player":"Garrett Wilson","pos":"WR","act":2.8,"proj":12.23,"short":9.43,"margin":1.36}],"heroes":[{"season":"2025","w":9,"rid":6,"opp":4,"post":false,"pid":"8112","player":"Drake London","pos":"WR","act":34.3,"proj":12.75,"over":21.55,"margin":8.46},{"season":"2025","w":2,"rid":1,"opp":7,"post":false,"pid":"7547","player":"Amon-Ra St. Brown","pos":"WR","act":34.7,"proj":13.73,"over":20.97,"margin":0.08},{"season":"2025","w":9,"rid":2,"opp":5,"post":false,"pid":"11560","player":"Caleb Williams","pos":"QB","act":37.7,"proj":17.72,"over":19.98,"margin":11.28},{"season":"2025","w":16,"rid":1,"opp":7,"post":true,"pid":"8144","player":"Chris Olave","pos":"WR","act":31.8,"proj":11.89,"over":19.91,"margin":18.34},{"season":"2025","w":16,"rid":3,"opp":4,"post":true,"pid":"9224","player":"Chase Brown","pos":"RB","act":30.9,"proj":12.06,"over":18.84,"margin":13.34},{"season":"2025","w":8,"rid":5,"opp":1,"post":false,"pid":"8138","player":"James Cook","pos":"RB","act":33.6,"proj":16.79,"over":16.81,"margin":12.38},{"season":"2025","w":6,"rid":6,"opp":7,"post":false,"pid":"5022","player":"Dallas Goedert","pos":"TE","act":26.0,"proj":9.35,"over":16.65,"margin":1.36},{"season":"2025","w":14,"rid":5,"opp":4,"post":false,"pid":"9493","player":"Puka Nacua","pos":"WR","act":32.2,"proj":16.41,"over":15.79,"margin":2.7},{"season":"2025","w":7,"rid":2,"opp":6,"post":false,"pid":"5859","player":"A.J. Brown","pos":"WR","act":26.1,"proj":10.61,"over":15.49,"margin":1.9},{"season":"2025","w":11,"rid":3,"opp":2,"post":false,"pid":"1466","player":"Travis Kelce","pos":"TE","act":24.1,"proj":10.95,"over":13.15,"margin":1.94}],"top":[{"season":"2025","w":12,"rid":4,"opp":2,"post":false,"res":"W","pid":"9221","player":"Jahmyr Gibbs","pos":"RB","act":49.9,"proj":20.59,"bench":false},{"season":"2025","w":10,"rid":6,"opp":3,"post":false,"res":"W","pid":"6813","player":"Jonathan Taylor","pos":"RB","act":48.1,"proj":21.07,"bench":false},{"season":"2025","w":15,"rid":5,"opp":7,"post":true,"res":"W","pid":"7553","player":"Kyle Pitts","pos":"TE","act":45.6,"proj":12.12,"bench":false},{"season":"2025","w":11,"rid":4,"opp":7,"post":false,"res":"L","pid":"4984","player":"Josh Allen","pos":"QB","act":44.68,"proj":23.09,"bench":false},{"season":"2025","w":15,"rid":5,"opp":7,"post":true,"res":"W","pid":"7523","player":"Trevor Lawrence","pos":"QB","act":44.3,"proj":16.75,"bench":false},{"season":"2025","w":9,"rid":4,"opp":6,"post":false,"res":"L","pid":"11604","player":"Brock Bowers","pos":"TE","act":43.3,"proj":13.65,"bench":false},{"season":"2025","w":16,"rid":5,"opp":6,"post":true,"res":"W","pid":"9493","player":"Puka Nacua","pos":"WR","act":40.5,"proj":17.22,"bench":false},{"season":"2025","w":7,"rid":7,"opp":8,"post":false,"res":"W","pid":"11563","player":"Bo Nix","pos":"QB","act":39.96,"proj":17.79,"bench":true},{"season":"2025","w":1,"rid":1,"opp":5,"post":false,"res":"L","pid":"4984","player":"Josh Allen","pos":"QB","act":38.76,"proj":21.5,"bench":false},{"season":"2025","w":14,"rid":4,"opp":5,"post":false,"res":"L","pid":"4984","player":"Josh Allen","pos":"QB","act":37.84,"proj":25.25,"bench":false}]},"draft":{"season":"2026","rounds":4,"board":[{"round":1,"slot":1,"orig":3,"owner":1},{"round":1,"slot":2,"orig":8,"owner":8},{"round":1,"slot":3,"orig":2,"owner":3},{"round":1,"slot":4,"orig":4,"owner":1},{"round":1,"slot":5,"orig":7,"owner":7},{"round":1,"slot":6,"orig":1,"owner":8},{"round":1,"slot":7,"orig":6,"owner":4},{"round":1,"slot":8,"orig":5,"owner":2},{"round":2,"slot":1,"orig":3,"owner":3},{"round":2,"slot":2,"orig":8,"owner":2},{"round":2,"slot":3,"orig":2,"owner":8},{"round":2,"slot":4,"orig":4,"owner":4},{"round":2,"slot":5,"orig":7,"owner":8},{"round":2,"slot":6,"orig":1,"owner":4},{"round":2,"slot":7,"orig":6,"owner":2},{"round":2,"slot":8,"orig":5,"owner":1},{"round":2,"slot":9,"orig":8,"owner":8,"comp":"cons"},{"round":3,"slot":1,"orig":3,"owner":3},{"round":3,"slot":2,"orig":8,"owner":8},{"round":3,"slot":3,"orig":2,"owner":6},{"round":3,"slot":4,"orig":4,"owner":4},{"round":3,"slot":5,"orig":7,"owner":7},{"round":3,"slot":6,"orig":1,"owner":1},{"round":3,"slot":7,"orig":6,"owner":1},{"round":3,"slot":8,"orig":5,"owner":5},{"round":3,"slot":9,"orig":4,"owner":4,"comp":"lba"},{"round":4,"slot":1,"orig":3,"owner":3},{"round":4,"slot":2,"orig":8,"owner":8},{"round":4,"slot":3,"orig":2,"owner":2},{"round":4,"slot":4,"orig":4,"owner":4},{"round":4,"slot":5,"orig":7,"owner":7},{"round":4,"slot":6,"orig":1,"owner":1},{"round":4,"slot":7,"orig":6,"owner":6},{"round":4,"slot":8,"orig":5,"owner":2}]},"brackets":{"live":false,"weeks":[15,16],"playoff":[{"id":"sf1","label":"Semifinal","round":1,"week":15,"teams":[{"rid":1,"seed":1,"pts":152.44},{"rid":6,"seed":4,"pts":152.78}],"win":6},{"id":"sf2","label":"Semifinal","round":1,"week":15,"teams":[{"rid":7,"seed":2,"pts":161.88},{"rid":5,"seed":3,"pts":207.82}],"win":5},{"id":"final","label":"Championship","round":2,"week":16,"teams":[{"rid":5,"seed":3,"pts":167.36},{"rid":6,"seed":4,"pts":92.84}],"win":5},{"id":"third","label":"3rd place","round":2,"week":16,"teams":[{"rid":1,"seed":1,"pts":147.56},{"rid":7,"seed":2,"pts":129.22}],"win":1}],"toilet":[{"id":"t1","label":"Round 1","round":1,"week":15,"teams":[{"rid":3,"seed":5,"pts":118.16},{"rid":2,"seed":8,"pts":119.06}],"win":2},{"id":"t2","label":"Round 1","round":1,"week":15,"teams":[{"rid":4,"seed":6,"pts":112.22},{"rid":8,"seed":7,"pts":147.1}],"win":8},{"id":"tfinal","label":"Toilet Bowl final","round":2,"week":16,"teams":[{"rid":8,"seed":7,"pts":138.56},{"rid":2,"seed":8,"pts":106.46}],"win":8},{"id":"last","label":"Last place","round":2,"week":16,"teams":[{"rid":3,"seed":5,"pts":130.04},{"rid":4,"seed":6,"pts":116.7}],"win":3}],"champ":5,"bowl":8,"last_place":4}},"2026":{"status":"in_season","reg_weeks":14,"last_scored":4,"teams":[{"rid":1,"owner_id":"91642043100971008","owner":"qanderson","team":"Sad Jameis"},{"rid":2,"owner_id":"1168251847505760256","owner":"madmax516","team":"jakn Goff n Laporta potty"},{"rid":3,"owner_id":"476494566665482240","owner":"brooklynivory","team":"Premature Ejeantylation"},{"rid":4,"owner_id":"472248903123595264","owner":"BoboTheClown","team":"Bill & Tets Bogus Journey"},{"rid":5,"owner_id":"1256273784587956224","owner":"PeachBoy666","team":"House of Pitts"},{"rid":6,"owner_id":"1256325779491397632","owner":"connorwgibbons","team":"Lamb Jack Attack!!!"},{"rid":7,"owner_id":"757450519965982720","owner":"willi11s","team":"Biffs ballzy bets"},{"rid":8,"owner_id":"480544283833659392","owner":"mcconneg","team":"Flaccid Penix"}],"standings":[{"rid":3,"w":3,"l":1,"t":0,"pf":602.82,"pa":560.68,"maxpf":676.0,"apw":21.0,"apn":28,"weeks":4,"rank":1,"ap_pct":0.75,"eff":0.8917,"exp_wins":8.03,"exp_pf":1977.8},{"rid":8,"w":3,"l":1,"t":0,"pf":597.72,"pa":532.34,"maxpf":725.76,"apw":16.0,"apn":28,"weeks":4,"rank":2,"ap_pct":0.5714,"eff":0.8236,"exp_wins":7.91,"exp_pf":1968.8},{"rid":6,"w":3,"l":1,"t":0,"pf":575.16,"pa":507.1,"maxpf":714.46,"apw":14.0,"apn":28,"weeks":4,"rank":3,"ap_pct":0.5,"eff":0.805,"exp_wins":9.72,"exp_pf":2109.0},{"rid":7,"w":2,"l":2,"t":0,"pf":547.9,"pa":590.36,"maxpf":684.0,"apw":16.0,"apn":28,"weeks":4,"rank":4,"ap_pct":0.5714,"eff":0.801,"exp_wins":7.39,"exp_pf":1966.1},{"rid":2,"w":2,"l":2,"t":0,"pf":544.5,"pa":604.64,"maxpf":674.24,"apw":16.0,"apn":28,"weeks":4,"rank":5,"ap_pct":0.5714,"eff":0.8076,"exp_wins":5.86,"exp_pf":1790.8},{"rid":5,"w":2,"l":2,"t":0,"pf":528.42,"pa":487.94,"maxpf":700.7,"apw":10.0,"apn":28,"weeks":4,"rank":6,"ap_pct":0.3571,"eff":0.7541,"exp_wins":6.47,"exp_pf":1864.4},{"rid":4,"w":1,"l":3,"t":0,"pf":544.48,"pa":546.74,"maxpf":713.32,"apw":9.0,"apn":28,"weeks":4,"rank":7,"ap_pct":0.3214,"eff":0.7633,"exp_wins":5.6,"exp_pf":1830.4},{"rid":1,"w":0,"l":4,"t":0,"pf":524.6,"pa":635.8,"maxpf":718.46,"apw":10.0,"apn":28,"weeks":4,"rank":8,"ap_pct":0.3571,"eff":0.7302,"exp_wins":5.02,"exp_pf":1871.8}],"records":{"high":[{"season":"2026","w":4,"rid":8,"owner_id":"480544283833659392","pts":183.88,"max":210.3,"opp":1,"opp_pts":136.48,"res":"W","post":false},{"season":"2026","w":4,"rid":6,"owner_id":"1256325779491397632","pts":174.36,"max":209.86,"opp":2,"opp_pts":103.22,"res":"W","post":false},{"season":"2026","w":1,"rid":3,"owner_id":"476494566665482240","pts":173.7,"max":186.54,"opp":7,"opp_pts":162.96,"res":"W","post":false},{"season":"2026","w":4,"rid":4,"owner_id":"472248903123595264","pts":169.9,"max":202.1,"opp":7,"opp_pts":86.2,"res":"W","post":false},{"season":"2026","w":1,"rid":5,"owner_id":"1256273784587956224","pts":163.9,"max":232.5,"opp":4,"opp_pts":114.72,"res":"W","post":false},{"season":"2026","w":1,"rid":7,"owner_id":"757450519965982720","pts":162.96,"max":199.6,"opp":3,"opp_pts":173.7,"res":"L","post":false},{"season":"2026","w":3,"rid":2,"owner_id":"1168251847505760256","pts":158.96,"max":195.08,"opp":3,"opp_pts":148.22,"res":"W","post":false},{"season":"2026","w":1,"rid":2,"owner_id":"1168251847505760256","pts":156.9,"max":170.76,"opp":1,"opp_pts":130.08,"res":"W","post":false},{"season":"2026","w":3,"rid":8,"owner_id":"480544283833659392","pts":154.06,"max":172.9,"opp":4,"opp_pts":134.84,"res":"W","post":false},{"season":"2026","w":2,"rid":7,"owner_id":"757450519965982720","pts":151.98,"max":162.78,"opp":2,"opp_pts":125.42,"res":"W","post":false}],"low":[{"season":"2026","w":4,"rid":7,"owner_id":"757450519965982720","pts":86.2,"max":145.38,"opp":4,"opp_pts":169.9,"res":"L","post":false},{"season":"2026","w":4,"rid":5,"owner_id":"1256273784587956224","pts":102.06,"max":139.46,"opp":3,"opp_pts":132.64,"res":"L","post":false},{"season":"2026","w":4,"rid":2,"owner_id":"1168251847505760256","pts":103.22,"max":143.88,"opp":6,"opp_pts":174.36,"res":"L","post":false},{"season":"2026","w":1,"rid":4,"owner_id":"472248903123595264","pts":114.72,"max":143.24,"opp":5,"opp_pts":163.9,"res":"L","post":false},{"season":"2026","w":3,"rid":6,"owner_id":"1256325779491397632","pts":118.82,"max":144.62,"opp":5,"opp_pts":140.84,"res":"L","post":false},{"season":"2026","w":3,"rid":1,"owner_id":"91642043100971008","pts":121.34,"max":191.02,"opp":7,"opp_pts":146.76,"res":"L","post":false},{"season":"2026","w":2,"rid":5,"owner_id":"1256273784587956224","pts":121.62,"max":176.5,"opp":8,"opp_pts":121.76,"res":"L","post":false},{"season":"2026","w":2,"rid":8,"owner_id":"480544283833659392","pts":121.76,"max":148.16,"opp":5,"opp_pts":121.62,"res":"W","post":false},{"season":"2026","w":2,"rid":4,"owner_id":"472248903123595264","pts":125.02,"max":184.74,"opp":6,"opp_pts":142.58,"res":"L","post":false},{"season":"2026","w":2,"rid":2,"owner_id":"1168251847505760256","pts":125.42,"max":164.52,"opp":7,"opp_pts":151.98,"res":"L","post":false}],"lucky":[{"season":"2026","w":2,"rid":8,"owner_id":"480544283833659392","pts":121.76,"max":148.16,"opp":5,"opp_pts":121.62,"res":"W","post":false},{"season":"2026","w":4,"rid":3,"owner_id":"476494566665482240","pts":132.64,"max":162.22,"opp":5,"opp_pts":102.06,"res":"W","post":false},{"season":"2026","w":1,"rid":6,"owner_id":"1256325779491397632","pts":139.4,"max":152.46,"opp":8,"opp_pts":138.02,"res":"W","post":false},{"season":"2026","w":3,"rid":5,"owner_id":"1256273784587956224","pts":140.84,"max":152.24,"opp":6,"opp_pts":118.82,"res":"W","post":false},{"season":"2026","w":2,"rid":6,"owner_id":"1256325779491397632","pts":142.58,"max":207.52,"opp":4,"opp_pts":125.02,"res":"W","post":false},{"season":"2026","w":3,"rid":7,"owner_id":"757450519965982720","pts":146.76,"max":176.24,"opp":1,"opp_pts":121.34,"res":"W","post":false},{"season":"2026","w":2,"rid":3,"owner_id":"476494566665482240","pts":148.26,"max":162.06,"opp":1,"opp_pts":136.7,"res":"W","post":false},{"season":"2026","w":2,"rid":7,"owner_id":"757450519965982720","pts":151.98,"max":162.78,"opp":2,"opp_pts":125.42,"res":"W","post":false},{"season":"2026","w":3,"rid":8,"owner_id":"480544283833659392","pts":154.06,"max":172.9,"opp":4,"opp_pts":134.84,"res":"W","post":false},{"season":"2026","w":1,"rid":2,"owner_id":"1168251847505760256","pts":156.9,"max":170.76,"opp":1,"opp_pts":130.08,"res":"W","post":false}],"unlucky":[{"season":"2026","w":1,"rid":7,"owner_id":"757450519965982720","pts":162.96,"max":199.6,"opp":3,"opp_pts":173.7,"res":"L","post":false},{"season":"2026","w":3,"rid":3,"owner_id":"476494566665482240","pts":148.22,"max":165.18,"opp":2,"opp_pts":158.96,"res":"L","post":false},{"season":"2026","w":1,"rid":8,"owner_id":"480544283833659392","pts":138.02,"max":194.4,"opp":6,"opp_pts":139.4,"res":"L","post":false},{"season":"2026","w":2,"rid":1,"owner_id":"91642043100971008","pts":136.7,"max":164.5,"opp":3,"opp_pts":148.26,"res":"L","post":false},{"season":"2026","w":4,"rid":1,"owner_id":"91642043100971008","pts":136.48,"max":193.08,"opp":8,"opp_pts":183.88,"res":"L","post":false},{"season":"2026","w":3,"rid":4,"owner_id":"472248903123595264","pts":134.84,"max":183.24,"opp":8,"opp_pts":154.06,"res":"L","post":false},{"season":"2026","w":1,"rid":1,"owner_id":"91642043100971008","pts":130.08,"max":169.86,"opp":2,"opp_pts":156.9,"res":"L","post":false},{"season":"2026","w":2,"rid":2,"owner_id":"1168251847505760256","pts":125.42,"max":164.52,"opp":7,"opp_pts":151.98,"res":"L","post":false},{"season":"2026","w":2,"rid":4,"owner_id":"472248903123595264","pts":125.02,"max":184.74,"opp":6,"opp_pts":142.58,"res":"L","post":false},{"season":"2026","w":2,"rid":5,"owner_id":"1256273784587956224","pts":121.62,"max":176.5,"opp":8,"opp_pts":121.76,"res":"L","post":false}],"eff":[{"season":"2026","w":2,"rid":7,"owner_id":"757450519965982720","pts":151.98,"max":162.78,"opp":2,"opp_pts":125.42,"res":"W","post":false,"eff":0.9337},{"season":"2026","w":1,"rid":3,"owner_id":"476494566665482240","pts":173.7,"max":186.54,"opp":7,"opp_pts":162.96,"res":"W","post":false,"eff":0.9312},{"season":"2026","w":3,"rid":5,"owner_id":"1256273784587956224","pts":140.84,"max":152.24,"opp":6,"opp_pts":118.82,"res":"W","post":false,"eff":0.9251},{"season":"2026","w":1,"rid":2,"owner_id":"1168251847505760256","pts":156.9,"max":170.76,"opp":1,"opp_pts":130.08,"res":"W","post":false,"eff":0.9188},{"season":"2026","w":2,"rid":3,"owner_id":"476494566665482240","pts":148.26,"max":162.06,"opp":1,"opp_pts":136.7,"res":"W","post":false,"eff":0.9148},{"season":"2026","w":1,"rid":6,"owner_id":"1256325779491397632","pts":139.4,"max":152.46,"opp":8,"opp_pts":138.02,"res":"W","post":false,"eff":0.9143},{"season":"2026","w":3,"rid":3,"owner_id":"476494566665482240","pts":148.22,"max":165.18,"opp":2,"opp_pts":158.96,"res":"L","post":false,"eff":0.8973},{"season":"2026","w":3,"rid":8,"owner_id":"480544283833659392","pts":154.06,"max":172.9,"opp":4,"opp_pts":134.84,"res":"W","post":false,"eff":0.891},{"season":"2026","w":4,"rid":8,"owner_id":"480544283833659392","pts":183.88,"max":210.3,"opp":1,"opp_pts":136.48,"res":"W","post":false,"eff":0.8744},{"season":"2026","w":4,"rid":4,"owner_id":"472248903123595264","pts":169.9,"max":202.1,"opp":7,"opp_pts":86.2,"res":"W","post":false,"eff":0.8407}],"ineff":[{"season":"2026","w":4,"rid":7,"owner_id":"757450519965982720","pts":86.2,"max":145.38,"opp":4,"opp_pts":169.9,"res":"L","post":false,"eff":0.5929},{"season":"2026","w":3,"rid":1,"owner_id":"91642043100971008","pts":121.34,"max":191.02,"opp":7,"opp_pts":146.76,"res":"L","post":false,"eff":0.6352},{"season":"2026","w":2,"rid":4,"owner_id":"472248903123595264","pts":125.02,"max":184.74,"opp":6,"opp_pts":142.58,"res":"L","post":false,"eff":0.6767},{"season":"2026","w":2,"rid":6,"owner_id":"1256325779491397632","pts":142.58,"max":207.52,"opp":4,"opp_pts":125.02,"res":"W","post":false,"eff":0.6871},{"season":"2026","w":2,"rid":5,"owner_id":"1256273784587956224","pts":121.62,"max":176.5,"opp":8,"opp_pts":121.76,"res":"L","post":false,"eff":0.6891},{"season":"2026","w":1,"rid":5,"owner_id":"1256273784587956224","pts":163.9,"max":232.5,"opp":4,"opp_pts":114.72,"res":"W","post":false,"eff":0.7049},{"season":"2026","w":4,"rid":1,"owner_id":"91642043100971008","pts":136.48,"max":193.08,"opp":8,"opp_pts":183.88,"res":"L","post":false,"eff":0.7069},{"season":"2026","w":1,"rid":8,"owner_id":"480544283833659392","pts":138.02,"max":194.4,"opp":6,"opp_pts":139.4,"res":"L","post":false,"eff":0.71},{"season":"2026","w":4,"rid":2,"owner_id":"1168251847505760256","pts":103.22,"max":143.88,"opp":6,"opp_pts":174.36,"res":"L","post":false,"eff":0.7174},{"season":"2026","w":4,"rid":5,"owner_id":"1256273784587956224","pts":102.06,"max":139.46,"opp":3,"opp_pts":132.64,"res":"L","post":false,"eff":0.7318}],"busts":[{"season":"2026","w":2,"rid":5,"opp":8,"post":false,"pid":"12508","player":"Jaxson Dart","pos":"QB","act":0.8,"proj":18.38,"short":17.58,"margin":0.14},{"season":"2026","w":1,"rid":8,"opp":6,"post":false,"pid":"5849","player":"Kyler Murray","pos":"QB","act":0.62,"proj":18.04,"short":17.42,"margin":1.38},{"season":"2026","w":1,"rid":7,"opp":3,"post":false,"pid":"7564","player":"Ja'Marr Chase","pos":"WR","act":2.2,"proj":16.96,"short":14.76,"margin":10.74}],"heroes":[{"season":"2026","w":3,"rid":2,"opp":3,"post":false,"pid":"9221","player":"Jahmyr Gibbs","pos":"RB","act":37.9,"proj":21.4,"over":16.5,"margin":10.74},{"season":"2026","w":1,"rid":3,"opp":7,"post":false,"pid":"12527","player":"Ashton Jeanty","pos":"RB","act":29.7,"proj":14.36,"over":15.34,"margin":10.74},{"season":"2026","w":2,"rid":3,"opp":1,"post":false,"pid":"1466","player":"Travis Kelce","pos":"TE","act":25.1,"proj":10.59,"over":14.51,"margin":11.56},{"season":"2026","w":1,"rid":6,"opp":8,"post":false,"pid":"6794","player":"Justin Jefferson","pos":"WR","act":27.2,"proj":14.25,"over":12.95,"margin":1.38},{"season":"2026","w":2,"rid":8,"opp":5,"post":false,"pid":"3294","player":"Dak Prescott","pos":"QB","act":29.76,"proj":19.46,"over":10.3,"margin":0.14}],"top":[{"season":"2026","w":2,"rid":4,"opp":6,"post":false,"res":"L","pid":"4984","player":"Josh Allen","pos":"QB","act":40.82,"proj":22.01,"bench":false},{"season":"2026","w":4,"rid":4,"opp":7,"post":false,"res":"W","pid":"12526","player":"Tetairoa McMillan","pos":"WR","act":38.2,"proj":13.27,"bench":false},{"season":"2026","w":2,"rid":5,"opp":8,"post":false,"res":"L","pid":"9488","player":"Jaxon Smith-Njigba","pos":"WR","act":38.0,"proj":16.13,"bench":false},{"season":"2026","w":3,"rid":2,"opp":3,"post":false,"res":"W","pid":"9221","player":"Jahmyr Gibbs","pos":"RB","act":37.9,"proj":21.4,"bench":false},{"season":"2026","w":1,"rid":1,"opp":2,"post":false,"res":"L","pid":"11560","player":"Caleb Williams","pos":"QB","act":37.26,"proj":18.31,"bench":true},{"season":"2026","w":1,"rid":4,"opp":5,"post":false,"res":"L","pid":"4984","player":"Josh Allen","pos":"QB","act":35.66,"proj":19.42,"bench":false},{"season":"2026","w":2,"rid":4,"opp":6,"post":false,"res":"L","pid":"2133","player":"Davante Adams","pos":"WR","act":35.5,"proj":11.35,"bench":true},{"season":"2026","w":1,"rid":5,"opp":4,"post":false,"res":"W","pid":"3198","player":"Derrick Henry","pos":"RB","act":34.8,"proj":14.69,"bench":false},{"season":"2026","w":3,"rid":8,"opp":4,"post":false,"res":"W","pid":"9509","player":"Bijan Robinson","pos":"RB","act":34.3,"proj":18.05,"bench":false},{"season":"2026","w":4,"rid":6,"opp":2,"post":false,"res":"W","pid":"6786","player":"CeeDee Lamb","pos":"WR","act":32.8,"proj":14.42,"bench":false}]},"draft":{"season":"2027","rounds":4,"board":[{"round":1,"slot":1,"orig":2,"owner":2},{"round":1,"slot":2,"orig":5,"owner":1},{"round":1,"slot":3,"orig":4,"owner":2},{"round":1,"slot":4,"orig":1,"owner":2},{"round":1,"slot":5,"orig":7,"owner":2},{"round":1,"slot":6,"orig":6,"owner":2},{"round":1,"slot":7,"orig":8,"owner":2},{"round":1,"slot":8,"orig":3,"owner":3},{"round":2,"slot":1,"orig":2,"owner":1},{"round":2,"slot":2,"orig":5,"owner":5},{"round":2,"slot":3,"orig":4,"owner":4},{"round":2,"slot":4,"orig":1,"owner":2},{"round":2,"slot":5,"orig":7,"owner":7},{"round":2,"slot":6,"orig":6,"owner":1},{"round":2,"slot":7,"orig":8,"owner":8},{"round":2,"slot":8,"orig":3,"owner":3},{"round":2,"slot":9,"comp":"cons","orig":null,"owner":null},{"round":3,"slot":1,"orig":2,"owner":2},{"round":3,"slot":2,"orig":5,"owner":5},{"round":3,"slot":3,"orig":4,"owner":4},{"round":3,"slot":4,"orig":1,"owner":1},{"round":3,"slot":5,"orig":7,"owner":7},{"round":3,"slot":6,"orig":6,"owner":1},{"round":3,"slot":7,"orig":8,"owner":8},{"round":3,"slot":8,"orig":3,"owner":3},{"round":3,"slot":9,"comp":"lba","orig":1,"owner":1,"pa":635.8},{"round":4,"slot":1,"orig":2,"owner":6},{"round":4,"slot":2,"orig":5,"owner":5},{"round":4,"slot":3,"orig":4,"owner":4},{"round":4,"slot":4,"orig":1,"owner":1},{"round":4,"slot":5,"orig":7,"owner":7},{"round":4,"slot":6,"orig":6,"owner":6},{"round":4,"slot":7,"orig":8,"owner":8},{"round":4,"slot":8,"orig":3,"owner":3}]},"brackets":{"live":true,"weeks":[15,16],"playoff":[{"id":"sf1","label":"Semifinal","round":1,"week":15,"teams":[{"rid":3,"seed":1,"pts":null},{"rid":7,"seed":4,"pts":null}]},{"id":"sf2","label":"Semifinal","round":1,"week":15,"teams":[{"rid":8,"seed":2,"pts":null},{"rid":6,"seed":3,"pts":null}]},{"id":"final","label":"Championship","round":2,"week":16,"teams":[],"src":["Winner 1 v 4","Winner 2 v 3"]},{"id":"third","label":"3rd place","round":2,"week":16,"teams":[],"src":["Loser 1 v 4","Loser 2 v 3"]}],"toilet":[{"id":"t1","label":"Round 1","round":1,"week":15,"teams":[{"rid":2,"seed":5,"pts":null},{"rid":1,"seed":8,"pts":null}]},{"id":"t2","label":"Round 1","round":1,"week":15,"teams":[{"rid":5,"seed":6,"pts":null},{"rid":4,"seed":7,"pts":null}]},{"id":"tfinal","label":"Toilet Bowl final","round":2,"week":16,"teams":[],"src":["Winner 5 v 8","Winner 6 v 7"]},{"id":"last","label":"Last place","round":2,"week":16,"teams":[],"src":["Loser 5 v 8","Loser 6 v 7"]}]}}},"alltime":{"high":[{"season":"2025","w":15,"rid":5,"owner_id":"1256273784587956224","pts":207.82,"max":222.7,"opp":7,"opp_pts":161.88,"res":"W","post":true},{"season":"2025","w":7,"rid":7,"owner_id":"757450519965982720","pts":198.66,"max":233.7,"opp":8,"opp_pts":115.74,"res":"W","post":false},{"season":"2026","w":4,"rid":8,"owner_id":"480544283833659392","pts":183.88,"max":210.3,"opp":1,"opp_pts":136.48,"res":"W","post":false},{"season":"2025","w":11,"rid":8,"owner_id":"480544283833659392","pts":175.42,"max":195.42,"opp":5,"opp_pts":135.52,"res":"W","post":false},{"season":"2026","w":4,"rid":6,"owner_id":"1256325779491397632","pts":174.36,"max":209.86,"opp":2,"opp_pts":103.22,"res":"W","post":false},{"season":"2026","w":1,"rid":3,"owner_id":"476494566665482240","pts":173.7,"max":186.54,"opp":7,"opp_pts":162.96,"res":"W","post":false},{"season":"2025","w":10,"rid":1,"owner_id":"91642043100971008","pts":170.48,"max":176.94,"opp":2,"opp_pts":137.3,"res":"W","post":false},{"season":"2026","w":4,"rid":4,"owner_id":"472248903123595264","pts":169.9,"max":202.1,"opp":7,"opp_pts":86.2,"res":"W","post":false},{"season":"2025","w":10,"rid":6,"owner_id":"1256325779491397632","pts":168.16,"max":189.64,"opp":3,"opp_pts":106.26,"res":"W","post":false},{"season":"2025","w":7,"rid":4,"owner_id":"472248903123595264","pts":167.42,"max":184.7,"opp":5,"opp_pts":120.12,"res":"W","post":false}],"low":[{"season":"2025","w":12,"rid":6,"owner_id":"1256325779491397632","pts":54.26,"max":76.36,"opp":5,"opp_pts":164.66,"res":"L","post":false},{"season":"2025","w":14,"rid":3,"owner_id":"476494566665482240","pts":74.9,"max":125.12,"opp":1,"opp_pts":109.76,"res":"L","post":false},{"season":"2025","w":8,"rid":8,"owner_id":"480544283833659392","pts":75.24,"max":100.04,"opp":6,"opp_pts":134.28,"res":"L","post":false},{"season":"2025","w":13,"rid":2,"owner_id":"1168251847505760256","pts":75.9,"max":105.4,"opp":8,"opp_pts":128.4,"res":"L","post":false},{"season":"2025","w":3,"rid":3,"owner_id":"476494566665482240","pts":78.22,"max":102.02,"opp":6,"opp_pts":123.84,"res":"L","post":false},{"season":"2025","w":11,"rid":6,"owner_id":"1256325779491397632","pts":78.22,"max":117.52,"opp":1,"opp_pts":99.78,"res":"L","post":false},{"season":"2025","w":6,"rid":5,"owner_id":"1256273784587956224","pts":81.52,"max":139.32,"opp":3,"opp_pts":106.28,"res":"L","post":false},{"season":"2025","w":13,"rid":6,"owner_id":"1256325779491397632","pts":83.8,"max":128.6,"opp":7,"opp_pts":149.14,"res":"L","post":false},{"season":"2025","w":4,"rid":2,"owner_id":"1168251847505760256","pts":85.2,"max":118.0,"opp":3,"opp_pts":144.86,"res":"L","post":false},{"season":"2026","w":4,"rid":7,"owner_id":"757450519965982720","pts":86.2,"max":145.38,"opp":4,"opp_pts":169.9,"res":"L","post":false}],"lucky":[{"season":"2025","w":11,"rid":3,"owner_id":"476494566665482240","pts":92.16,"max":128.42,"opp":2,"opp_pts":90.22,"res":"W","post":false},{"season":"2025","w":11,"rid":1,"owner_id":"91642043100971008","pts":99.78,"max":127.68,"opp":6,"opp_pts":78.22,"res":"W","post":false},{"season":"2025","w":6,"rid":3,"owner_id":"476494566665482240","pts":106.28,"max":148.24,"opp":5,"opp_pts":81.52,"res":"W","post":false},{"season":"2025","w":9,"rid":3,"owner_id":"476494566665482240","pts":109.52,"max":126.0,"opp":8,"opp_pts":108.54,"res":"W","post":false},{"season":"2025","w":14,"rid":1,"owner_id":"91642043100971008","pts":109.76,"max":157.26,"opp":3,"opp_pts":74.9,"res":"W","post":false},{"season":"2025","w":7,"rid":2,"owner_id":"1168251847505760256","pts":110.62,"max":144.28,"opp":6,"opp_pts":108.72,"res":"W","post":false},{"season":"2025","w":2,"rid":1,"owner_id":"91642043100971008","pts":111.5,"max":154.28,"opp":7,"opp_pts":111.42,"res":"W","post":false},{"season":"2025","w":2,"rid":6,"owner_id":"1256325779491397632","pts":115.62,"max":148.28,"opp":4,"opp_pts":97.52,"res":"W","post":false},{"season":"2025","w":14,"rid":6,"owner_id":"1256325779491397632","pts":116.54,"max":138.78,"opp":2,"opp_pts":109.08,"res":"W","post":false},{"season":"2025","w":5,"rid":1,"owner_id":"91642043100971008","pts":116.84,"max":130.3,"opp":8,"opp_pts":96.18,"res":"W","post":false}],"unlucky":[{"season":"2026","w":1,"rid":7,"owner_id":"757450519965982720","pts":162.96,"max":199.6,"opp":3,"opp_pts":173.7,"res":"L","post":false},{"season":"2025","w":15,"rid":7,"owner_id":"757450519965982720","pts":161.88,"max":187.68,"opp":5,"opp_pts":207.82,"res":"L","post":true},{"season":"2025","w":4,"rid":6,"owner_id":"1256325779491397632","pts":152.64,"max":185.66,"opp":1,"opp_pts":157.58,"res":"L","post":false},{"season":"2025","w":15,"rid":1,"owner_id":"91642043100971008","pts":152.44,"max":168.74,"opp":6,"opp_pts":152.78,"res":"L","post":true},{"season":"2025","w":6,"rid":7,"owner_id":"757450519965982720","pts":151.58,"max":188.5,"opp":6,"opp_pts":152.94,"res":"L","post":false},{"season":"2025","w":9,"rid":4,"owner_id":"472248903123595264","pts":149.12,"max":186.62,"opp":6,"opp_pts":157.58,"res":"L","post":false},{"season":"2025","w":5,"rid":6,"owner_id":"1256325779491397632","pts":149.0,"max":160.7,"opp":5,"opp_pts":164.0,"res":"L","post":false},{"season":"2026","w":3,"rid":3,"owner_id":"476494566665482240","pts":148.22,"max":165.18,"opp":2,"opp_pts":158.96,"res":"L","post":false},{"season":"2025","w":14,"rid":4,"owner_id":"472248903123595264","pts":148.0,"max":191.8,"opp":5,"opp_pts":150.7,"res":"L","post":false},{"season":"2025","w":5,"rid":3,"owner_id":"476494566665482240","pts":144.94,"max":177.42,"opp":7,"opp_pts":152.42,"res":"L","post":false}],"eff":[{"season":"2025","w":11,"rid":5,"owner_id":"1256273784587956224","pts":135.52,"max":135.52,"opp":8,"opp_pts":175.42,"res":"L","post":false,"eff":1.0},{"season":"2025","w":6,"rid":2,"owner_id":"1168251847505760256","pts":128.14,"max":132.64,"opp":8,"opp_pts":92.54,"res":"W","post":false,"eff":0.9661},{"season":"2025","w":10,"rid":1,"owner_id":"91642043100971008","pts":170.48,"max":176.94,"opp":2,"opp_pts":137.3,"res":"W","post":false,"eff":0.9635},{"season":"2025","w":12,"rid":4,"owner_id":"472248903123595264","pts":149.98,"max":158.52,"opp":2,"opp_pts":111.42,"res":"W","post":false,"eff":0.9461},{"season":"2025","w":5,"rid":7,"owner_id":"757450519965982720","pts":152.42,"max":162.04,"opp":3,"opp_pts":144.94,"res":"W","post":false,"eff":0.9406},{"season":"2025","w":14,"rid":5,"owner_id":"1256273784587956224","pts":150.7,"max":161.2,"opp":4,"opp_pts":148.0,"res":"W","post":false,"eff":0.9349},{"season":"2026","w":2,"rid":7,"owner_id":"757450519965982720","pts":151.98,"max":162.78,"opp":2,"opp_pts":125.42,"res":"W","post":false,"eff":0.9337},{"season":"2025","w":15,"rid":5,"owner_id":"1256273784587956224","pts":207.82,"max":222.7,"opp":7,"opp_pts":161.88,"res":"W","post":true,"eff":0.9332},{"season":"2026","w":1,"rid":3,"owner_id":"476494566665482240","pts":173.7,"max":186.54,"opp":7,"opp_pts":162.96,"res":"W","post":false,"eff":0.9312},{"season":"2025","w":5,"rid":6,"owner_id":"1256325779491397632","pts":149.0,"max":160.7,"opp":5,"opp_pts":164.0,"res":"L","post":false,"eff":0.9272}],"ineff":[{"season":"2025","w":6,"rid":5,"owner_id":"1256273784587956224","pts":81.52,"max":139.32,"opp":3,"opp_pts":106.28,"res":"L","post":false,"eff":0.5851},{"season":"2026","w":4,"rid":7,"owner_id":"757450519965982720","pts":86.2,"max":145.38,"opp":4,"opp_pts":169.9,"res":"L","post":false,"eff":0.5929},{"season":"2025","w":1,"rid":7,"owner_id":"757450519965982720","pts":93.72,"max":156.9,"opp":2,"opp_pts":122.68,"res":"L","post":false,"eff":0.5973},{"season":"2025","w":14,"rid":3,"owner_id":"476494566665482240","pts":74.9,"max":125.12,"opp":1,"opp_pts":109.76,"res":"L","post":false,"eff":0.5986},{"season":"2025","w":10,"rid":7,"owner_id":"757450519965982720","pts":87.12,"max":142.32,"opp":5,"opp_pts":119.02,"res":"L","post":false,"eff":0.6121},{"season":"2025","w":11,"rid":4,"owner_id":"472248903123595264","pts":114.32,"max":186.04,"opp":7,"opp_pts":134.08,"res":"L","post":false,"eff":0.6145},{"season":"2026","w":3,"rid":1,"owner_id":"91642043100971008","pts":121.34,"max":191.02,"opp":7,"opp_pts":146.76,"res":"L","post":false,"eff":0.6352},{"season":"2025","w":2,"rid":7,"owner_id":"757450519965982720","pts":111.42,"max":175.18,"opp":1,"opp_pts":111.5,"res":"L","post":false,"eff":0.636},{"season":"2025","w":7,"rid":3,"owner_id":"476494566665482240","pts":96.84,"max":149.3,"opp":1,"opp_pts":129.84,"res":"L","post":false,"eff":0.6486},{"season":"2025","w":13,"rid":6,"owner_id":"1256325779491397632","pts":83.8,"max":128.6,"opp":7,"opp_pts":149.14,"res":"L","post":false,"eff":0.6516}],"most_wins_season":[{"season":"2025","rid":1,"owner_id":"91642043100971008","w":11,"l":3,"ap_pct":0.5612,"complete":true},{"season":"2025","rid":7,"owner_id":"757450519965982720","w":10,"l":4,"ap_pct":0.6837,"complete":true},{"season":"2025","rid":5,"owner_id":"1256273784587956224","w":8,"l":6,"ap_pct":0.5714,"complete":true},{"season":"2025","rid":6,"owner_id":"1256325779491397632","w":8,"l":6,"ap_pct":0.5816,"complete":true},{"season":"2025","rid":3,"owner_id":"476494566665482240","w":7,"l":7,"ap_pct":0.3265,"complete":true},{"season":"2025","rid":4,"owner_id":"472248903123595264","w":4,"l":10,"ap_pct":0.4898,"complete":true},{"season":"2025","rid":8,"owner_id":"480544283833659392","w":4,"l":10,"ap_pct":0.3878,"complete":true},{"season":"2025","rid":2,"owner_id":"1168251847505760256","w":4,"l":10,"ap_pct":0.398,"complete":true},{"season":"2026","rid":3,"owner_id":"476494566665482240","w":3,"l":1,"ap_pct":0.75,"complete":false},{"season":"2026","rid":8,"owner_id":"480544283833659392","w":3,"l":1,"ap_pct":0.5714,"complete":false}],"most_wins_all":[{"owner_id":"91642043100971008","w":12,"l":8,"t":0},{"owner_id":"1256273784587956224","w":12,"l":8,"t":0},{"owner_id":"1256325779491397632","w":12,"l":8,"t":0},{"owner_id":"757450519965982720","w":12,"l":8,"t":0},{"owner_id":"476494566665482240","w":11,"l":9,"t":0},{"owner_id":"480544283833659392","w":9,"l":11,"t":0},{"owner_id":"1168251847505760256","w":7,"l":13,"t":0},{"owner_id":"472248903123595264","w":5,"l":15,"t":0}],"ap_season":[{"season":"2026","rid":3,"owner_id":"476494566665482240","w":3,"l":1,"ap_pct":0.75,"complete":false},{"season":"2025","rid":7,"owner_id":"757450519965982720","w":10,"l":4,"ap_pct":0.6837,"complete":true},{"season":"2025","rid":6,"owner_id":"1256325779491397632","w":8,"l":6,"ap_pct":0.5816,"complete":true},{"season":"2025","rid":5,"owner_id":"1256273784587956224","w":8,"l":6,"ap_pct":0.5714,"complete":true},{"season":"2026","rid":8,"owner_id":"480544283833659392","w":3,"l":1,"ap_pct":0.5714,"complete":false},{"season":"2026","rid":7,"owner_id":"757450519965982720","w":2,"l":2,"ap_pct":0.5714,"complete":false},{"season":"2026","rid":2,"owner_id":"1168251847505760256","w":2,"l":2,"ap_pct":0.5714,"complete":false},{"season":"2025","rid":1,"owner_id":"91642043100971008","w":11,"l":3,"ap_pct":0.5612,"complete":true},{"season":"2026","rid":6,"owner_id":"1256325779491397632","w":3,"l":1,"ap_pct":0.5,"complete":false},{"season":"2025","rid":4,"owner_id":"472248903123595264","w":4,"l":10,"ap_pct":0.4898,"complete":true}],"ap_all":[{"owner_id":"757450519965982720","ap_pct":0.6571,"apw":92.0,"apn":140},{"owner_id":"1256273784587956224","ap_pct":0.5714,"apw":80.0,"apn":140},{"owner_id":"1256325779491397632","ap_pct":0.5429,"apw":76.0,"apn":140},{"owner_id":"91642043100971008","ap_pct":0.5357,"apw":75.0,"apn":140},{"owner_id":"480544283833659392","ap_pct":0.4429,"apw":62.0,"apn":140},{"owner_id":"472248903123595264","ap_pct":0.4214,"apw":59.0,"apn":140},{"owner_id":"1168251847505760256","ap_pct":0.4143,"apw":58.0,"apn":140},{"owner_id":"476494566665482240","ap_pct":0.4143,"apw":58.0,"apn":140}],"eff_team":[{"owner_id":"1256273784587956224","eff":0.8163,"pts":2713.0,"mx":3323.34},{"owner_id":"1256325779491397632","eff":0.8128,"pts":2551.58,"mx":3139.36},{"owner_id":"480544283833659392","eff":0.8117,"pts":2515.28,"mx":3098.84},{"owner_id":"757450519965982720","eff":0.8114,"pts":2767.9,"mx":3411.34},{"owner_id":"91642043100971008","eff":0.805,"pts":2608.22,"mx":3240.04},{"owner_id":"1168251847505760256","eff":0.8043,"pts":2364.98,"mx":2940.6},{"owner_id":"476494566665482240","eff":0.8015,"pts":2393.58,"mx":2986.54},{"owner_id":"472248903123595264","eff":0.7667,"pts":2570.46,"mx":3352.68}]},"owners":{"91642043100971008":{"owner":"qanderson","team":"Sad Jameis"},"1168251847505760256":{"owner":"madmax516","team":"jakn Goff n Laporta potty"},"476494566665482240":{"owner":"brooklynivory","team":"Premature Ejeantylation"},"472248903123595264":{"owner":"BoboTheClown","team":"Bill & Tets Bogus Journey"},"1256273784587956224":{"owner":"PeachBoy666","team":"House of Pitts"},"1256325779491397632":{"owner":"connorwgibbons","team":"Lamb Jack Attack!!!"},"757450519965982720":{"owner":"willi11s","team":"Biffs ballzy bets"},"480544283833659392":{"owner":"mcconneg","team":"Flaccid Penix"}},"admin":{"season":"2026","source":"Official League Rulebook v2026 and the Gr8tful 8 2026 Season sheet","payouts":{"places":[{"place":1,"label":"Champion","amount":250,"extra":"Plus a jersey of their choice, up to $200. Your fantasy MVP."},{"place":2,"label":"Runner-up","amount":200},{"place":3,"label":"Third place","amount":100},{"place":4,"label":"4th\u20138th","amount":0}],"weekly":{"amount":20,"weeks":14,"label":"Highest score each week"},"season_high":{"label":"Most points in the regular season","amount_text":"Whatever is left over, about $40"}},"dates":[{"event":"Owner's Meeting","what":"Weekly waivers and trades open","date":null,"date_text":"Done"},{"event":"Start of the NFL league year","what":"NFL event","date":"2026-03-11"},{"event":"NFL Draft","what":"NFL event","date":"2026-04-23"},{"event":"Rookie Draft","what":"League event, 8:15 PM","date":"2026-06-22"},{"event":"Preseason starts","what":"Waivers move to daily","date":"2026-08-06"},{"event":"Last preseason game","what":"Legal roster required","date":"2026-08-29"},{"event":"First regular-season game","what":"Taxi squads lock","date":"2026-09-09"},{"event":"NFL trade deadline","what":"NFL event, 4 PM ET","date":"2026-11-10"},{"event":"Final game of Week 12","what":"Trade deadline","date":"2026-11-30","note":"Trades must be accepted by the end of this game."},{"event":"Fantasy playoffs begin","what":"Week 15","date":"2026-12-17"},{"event":"Championship week","what":"Week 16","date":"2026-12-24"},{"event":"Offseason","what":"Until the next Owner's Meeting","date":"2026-12-28","note":"Trades and waivers turn off."}],"yearly":["Owner's Meeting before the NFL season, in March: rule changes and votes, trophies, and the draft order is set. Firm handshakes and hearty laughs all around.","New season kicks off: FAAB resets and waivers open weekly.","NFL Draft, then the league's rookie draft.","NFL preseason starts: waivers move to daily and taxi squads are confirmed.","NFL season starts.","Week 16 ends and a new champion is crowned. Congrats on the jersey.","Deadzone: waivers and trades are off until the next Owner's Meeting."],"rules":[{"title":"Scoring","items":["Half PPR, full PPR for tight ends (+0.5 per TE catch)","Passing: 4 points per TD, 0.04 per yard (1 point per 25 yards)","Rushing and receiving: 6 points per TD, 0.1 per yard","2 points per two-point conversion","Interception thrown: \u22121","Fumble lost: \u22122"]},{"title":"Roster","items":["Starters: QB, 2 RB, 3 WR, TE, 2 FLEX, 1 SUPERFLEX","17 bench spots","4 IR spots. The player must be on the NFL's IR or PUP list.","4 taxi squad spots, rookies only. Set them before Week 1; once the season starts nobody can be moved onto the taxi squad, but you can move a player off it anytime you have a legal roster. After one year of NFL experience a player must leave the taxi squad (roster, drop or trade)."]},{"title":"Schedule and playoffs","items":["One division of 8 teams. Balanced schedule: everyone plays every team twice.","Playoffs in Weeks 15 and 16. Four teams, one-week matchups.","The bottom four play the Toilet Bowl. Round 1 winners meet in the final for pick 2.09; round 1 losers play for last place, and the loser takes the punishment."]},{"title":"Rookie draft order","items":["Playoff teams pick by inverse playoff finish. The champion picks 8th.","Non-playoff teams pick by Max Points For at the end of the regular season (best possible lineup, not starters). Lowest Max PF picks 1st, so benching your starters doesn't help you tank.","Pick 2.09 goes to the Toilet Bowl winner: the non-playoff team that wins both of its games.","Pick 3.09 goes to the team with the most points against in the regular season."]},{"title":"Rookie draft","items":["Rookies only, 4 rounds, linear (not snake), 5 minutes per pick.","Trades are allowed during the draft, and each team gets one 5-minute pause.","Current and future picks can be traded.","2026 draft: June 22, 8:15 PM."]},{"title":"Transactions","items":["Players lock at the start of their game each week and unlock Wednesday at 12 PM.","Tuesday night is the first waiver run each week; after that waivers process daily at 12 PM. Players clear waivers after 1 day.","No limit on transactions. No trade vetoes; trades truly worth discussing go to a league vote.","Trade deadline: Week 12.","FAAB: $200 per season, reset once after the Super Bowl, no carryover. $0 bids allowed.","Waiver priority follows draft order (1.01 has the lowest priority). A claim sends you to the back; priority breaks ties on equal bids.","Waivers stay open year-round except the deadzone between the championship and the Owner's Meeting."]}]},"admin_live":{"weekly":[{"w":1,"rids":[3],"pts":173.7},{"w":2,"rids":[7],"pts":151.98},{"w":3,"rids":[2],"pts":158.96},{"w":4,"rids":[8],"pts":183.88}],"reg_weeks":14,"last_scored":4,"status":"in_season","pf_leader":{"rid":3,"pf":602.82},"places":{}}}</script>
+<script>
+(function(){
+"use strict";
+const LG = JSON.parse(document.getElementById("data").textContent);
+const CUR = LG.meta.current_season;
+const SEASONS = Object.keys(LG.seasons).sort().reverse();
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const f1 = v => v==null||isNaN(v) ? "—" : (+v).toFixed(1);
+const f2 = v => v==null||isNaN(v) ? "—" : (+v).toFixed(2);
+const pct = (v, d=0) => v==null||isNaN(v) ? "—" : (v*100).toFixed(d)+"%";
+const store = {get(k,d){try{const v=localStorage.getItem("g8l:"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("g8l:"+k,JSON.stringify(v))}catch(e){}}};
+
+const PEOPLE={qanderson:"Quaid",brooklynivory:"Mike",willi11s:"Sam",madmax516:"Max",peachboy666:"James",mcconneg:"George",connorwgibbons:"Connor",bobotheclown:"Austin"};
+const who=t=>PEOPLE[String((t&&t.owner)||"").toLowerCase()]||(t&&t.owner)||"?";
+Object.values(LG.seasons).forEach(S=>S.teams.forEach(t=>{t.name=who(t);}));
+function teamsOf(season){ const m={}; (LG.seasons[season]||LG.seasons[CUR]).teams.forEach(t=>m[t.rid]=t); return m; }
+const CT = teamsOf(CUR);
+function ownerTeam(oid){ const t = LG.seasons[CUR].teams.find(t=>t.owner_id===oid); if(t) return t; const o=LG.owners[oid]||{}; const x={team:o.team||"?", owner:o.owner||"?", rid:null}; x.name=who(x); return x; }
+function teamAt(season, oid){ const S=LG.seasons[season]; const t=S&&S.teams.find(x=>x.owner_id===oid); return t||ownerTeam(oid); }
+function teamCell(t, extra=""){ return `<div class="team"><b title="${esc(t.team)}">${esc(t.name)}</b>${extra?`<small>${extra}</small>`:""}</div>`; }
+function posTag(p){ return `<span class="pos ${esc(p)}">${esc(p)}</span>`; }
+function ordinal(n){ const s=["th","st","nd","rd"], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); }
+
+const TEAM_OPTS = LG.seasons[CUR].teams.slice().sort((a,b)=>a.name.localeCompare(b.name));
+const SUBS = [...SEASONS.map(s=>({k:"s:"+s, l:`${s} Season`})), {k:"weekly",l:"All-Time Weekly"}, {k:"seasons",l:"All-Time Season"}, {k:"career",l:"All-Time Records"}];
+const state = {
+  tab: "standings", asub: store.get("asub", "dates"), season: store.get("season", CUR), draft: store.get("draft", CUR), bk: store.get("bk", CUR), sub: store.get("sub", "s:"+CUR),
+  team: store.get("team", ""), projFull: store.get("projFull", false), showFullDraft: false, sorts: {}
+};
+if (!LG.seasons[state.season] && state.season!=="all") state.season = CUR;
+if (!LG.seasons[state.draft]) state.draft = CUR;
+if (!LG.seasons[state.bk]) state.bk = CUR;
+if (!SUBS.some(s=>s.k===state.sub)) state.sub = "s:"+CUR;
+if (!["dates","rules","pay"].includes(state.asub)) state.asub = "dates";
+if (state.team && !TEAM_OPTS.some(t=>t.owner_id===state.team)) state.team = "";
+const hl = oid => state.team && oid===state.team ? "hl" : "";
+
+/* ---------- sortable table ---------- */
+function sortableTable(id, cols, rows, opts={}){
+  const st = state.sorts[id] || (state.sorts[id] = {key: opts.sortKey || cols[0].key, dir: opts.sortDir || 1});
+  const col = cols.find(c=>c.key===st.key) || cols[0];
+  const sv = col.sort || (r=>r[col.key]);
+  const data = rows.slice().sort((a,b)=>{ let x=sv(a), y=sv(b); if(typeof x==="string") return st.dir*x.localeCompare(y); return st.dir*(x-y); });
+  let h = `<div class="tw"><table id="${id}"><thead><tr>` + cols.map(c=>`<th class="${c.n?"n ":""}${c.cls||""} sortable" data-k="${c.key}" ${c.title?`title="${esc(c.title)}"`:""} aria-sort="${st.key===c.key?(st.dir>0?"ascending":"descending"):"none"}" tabindex="0">${esc(c.label)}${st.key===c.key?`<span class="arr">${st.dir>0?"▲":"▼"}</span>`:""}</th>`).join("") + `</tr></thead><tbody>`;
+  h += data.map(r=>`<tr class="${opts.rowClass?opts.rowClass(r):""}">` + cols.map(c=>`<td class="${c.n?"n ":""}${c.cls||""}">${c.fmt(r)}</td>`).join("") + `</tr>`).join("");
+  return h + `</tbody></table></div>`;
+}
+
+/* ---------- standings ---------- */
+function allTimeStandings(){
+  const agg={};
+  SEASONS.forEach(s=>{ const T=teamsOf(s); LG.seasons[s].standings.forEach(x=>{ const oid=T[x.rid].owner_id; const a=agg[oid]||(agg[oid]={oid,w:0,l:0,t:0,pf:0,pa:0,maxpf:0,apw:0,apn:0}); a.w+=x.w;a.l+=x.l;a.t+=x.t;a.pf+=x.pf;a.pa+=x.pa;a.maxpf+=x.maxpf;a.apw+=x.apw;a.apn+=x.apn; }); });
+  const rows=Object.values(agg).map(a=>({...a, ap_pct:a.apw/a.apn, eff:a.pf/a.maxpf}));
+  rows.sort((a,b)=>(b.w+0.5*b.t)-(a.w+0.5*a.t)||b.pf-a.pf); rows.forEach((r,i)=>r.rank=i+1); return rows;
+}
+function seasonSeg(){
+  const opts = SEASONS.map(s=>`<button data-season="${s}" aria-pressed="${state.season===s}">${s}${s===CUR?" · live":""}</button>`).join("") + `<button data-season="all" aria-pressed="${state.season==="all"}">All-time</button>`;
+  return `<div class="bar-row"><span class="eyebrow">Season</span><div class="seg" role="group" aria-label="Season">${opts}</div></div>`;
+}
+function standingsPage(){
+  const season=state.season, all=season==="all", S=all?null:LG.seasons[season], T=all?null:teamsOf(season);
+  const rows = all ? allTimeStandings() : S.standings;
+  const oidOf = r => all ? r.oid : T[r.rid].owner_id;
+  const tOf = r => all ? ownerTeam(r.oid) : T[r.rid];
+  const games = r => r.w+r.l+r.t;
+  const cols = [
+    {key:"rank",label:"Rank",cls:"sk0",fmt:r=>`<span class="rank">${r.rank}</span>`},
+    {key:"team",label:"Manager",cls:"sk1",fmt:r=>teamCell(tOf(r), !all&&S.status==="complete"&&r.final_place?`finished ${ordinal(r.final_place)}`:""),sort:r=>tOf(r).name.toLowerCase()},
+    {key:"rec",label:"Record",n:true,fmt:r=>`${r.w}-${r.l}${r.t?"-"+r.t:""}`,sort:r=>r.w+0.5*r.t},
+    {key:"pf",label:"PF",n:true,fmt:r=>f2(r.pf)},
+    {key:"maxpf",label:"Max PF",n:true,fmt:r=>f2(r.maxpf),title:"Points from each week's best possible lineup"},
+    {key:"ppg",label:"PF/G",n:true,fmt:r=>games(r)?f2(r.pf/games(r)):"—",sort:r=>games(r)?r.pf/games(r):0,title:"Points scored per regular-season game"},
+    {key:"pa",label:"PA",n:true,fmt:r=>f2(r.pa)},
+    {key:"ap_pct",label:"All-Play",n:true,fmt:r=>pct(r.ap_pct,1)+` <small class="faint">${Math.round(r.apw)}-${r.apn-Math.round(r.apw)}</small>`,title:"Win rate if you played every team every week"},
+    {key:"eff",label:"Efficiency",n:true,fmt:r=>pct(r.eff,1),title:"Total PF ÷ Max PF"},
+  ];
+  const id="stand-"+season;
+  if(!state.sorts[id]) state.sorts[id]={key:"rank",dir:1};
+  const note = all ? `All ${SEASONS.length} seasons combined, regular season only.` : (season===CUR ? `Through Week ${S.last_scored} of ${S.reg_weeks}.` : `Final ${season} regular season.`);
+  return `<div class="page">${seasonSeg()}<section class="panel"><div class="panel-h"><div><div class="eyebrow">${all?"All-time":season+" season"}</div><h2>Standings</h2></div><div class="note">${esc(note)}</div></div>
+  <div class="panel-b" style="padding:0">${sortableTable(id, cols, rows, {rowClass:r=>hl(oidOf(r))})}</div></section></div>`;
+}
+
+/* ---------- brackets ---------- */
+function bracketsPage(){
+  const s=state.bk, S=LG.seasons[s], B=S.brackets, T=teamsOf(s), st={}; S.standings.forEach(x=>st[x.rid]=x);
+  const seg = SEASONS.map(x=>`<button data-bk="${x}" aria-pressed="${state.bk===x}">${LG.seasons[x].brackets.live?`<span class="lg-only">${x} · if the season ended today</span><span class="sm-only">${x} · live</span>`:x}</button>`).join("");
+  const tmRow=(g,t)=>{ const tt=T[t.rid]; const done=g.win!=null;
+    let chip="";
+    if(g.id==="final"&&B.champ===t.rid) chip=`<span class="chip acc">Champion</span>`;
+    if(g.id==="tfinal"&&B.bowl===t.rid) chip=`<span class="chip acc" title="Wins the Toilet Bowl and pick 2.09">2.09</span>`;
+    if(g.id==="last"&&B.last_place===t.rid) chip=`<span class="chip" title="Loses out and takes the punishment">Last place</span>`;
+    const x=st[t.rid]; const sc = B.live ? `${x.w}-${x.l}${x.t?"-"+x.t:""}` : f2(t.pts);
+    return `<div class="tm ${done?(g.win===t.rid?"win":"lose"):""} ${hl(tt.owner_id)}"><span class="sd">${t.seed}</span><span class="nm"><b>${esc(tt.name)}</b>${chip}</span><span class="sc">${sc}</span></div>`; };
+  const match=(g,cls="")=>{
+    const rows = g.teams.length ? g.teams.map(t=>tmRow(g,t)).join("") : (g.src||[]).map(x=>`<div class="tm tbd"><span class="sd"></span><span class="nm">${esc(x)}</span><span class="sc"></span></div>`).join("");
+    const seeds = g.teams.length===2 ? `${g.teams[0].seed} v ${g.teams[1].seed}` : "";
+    return `<div class="m ${cls}"><div class="ml"><span>${esc(g.label)}</span><span>${seeds}</span></div>${rows}</div>`; };
+  const bracket=([a,b,f,t])=>`<div class="bk">
+    <div class="rh" style="grid-column:1;grid-row:1">Week ${B.weeks[0]}</div>
+    <div style="grid-column:1;grid-row:2">${match(a)}</div>
+    <div style="grid-column:1;grid-row:3">${match(b)}</div>
+    <div class="conn" style="grid-column:2;grid-row:2 / span 2"></div>
+    <div class="rh r2" style="grid-column:3;grid-row:1">Week ${B.weeks[1]}</div>
+    <div style="grid-column:3;grid-row:2 / span 2;align-self:center">${match(f,"main")}</div>
+    <div style="grid-column:3;grid-row:4">${match(t)}</div></div>`;
+  const eb = B.live ? `${s} · if the season ended today` : `${s} · final`;
+  const seedNote = B.live ? ` Seeded from standings through Week ${S.last_scored}; the record shows next to each team.` : "";
+  return `<div class="page"><div class="bar-row"><span class="eyebrow">Season</span><div class="seg" role="group" aria-label="Season">${seg}</div></div>
+  <div class="bk-grid">
+  <section class="panel"><div class="panel-h"><div><div class="eyebrow">${esc(eb)}</div><h2>Playoffs</h2><div class="muted" style="font-size:12.5px;margin-top:2px">Top four seeds. Finish sets draft picks 5–8; the champion picks 8th.${esc(seedNote)}</div></div></div><div class="panel-b">${bracket(B.playoff)}</div></section>
+  <section class="panel"><div class="panel-h"><div><div class="eyebrow">${esc(eb)}</div><h2>Toilet Bowl</h2><div class="muted" style="font-size:12.5px;margin-top:2px">Seeds 5–8. Round 1 winners meet in the Toilet Bowl final, and its winner gets pick 2.09. Round 1 losers play for last place, and the loser takes the punishment.</div></div></div><div class="panel-b">${bracket(B.toilet)}</div></section>
+  </div></div>`;
+}
+
+/* ---------- draft order ---------- */
+function draftPage(){
+  const s=state.draft, S=LG.seasons[s], D=S.draft, T=CT, live=s===CUR;
+  const seg = SEASONS.map(x=>`<button data-draft="${x}" aria-pressed="${state.draft===x}">${LG.seasons[x].draft.season} draft${x===CUR?" · projected":""}</button>`).join("");
+  const overall = new Map(D.board.map((b,i)=>[b,i+1]));  // 1–34 in draft order, comp picks included
+  const vis = D.board.filter(b=>state.showFullDraft || b.round===1 || b.comp);
+  const rowsHtml = vis.map((b,i)=>{
+    const pick = `${b.round}.${String(b.slot).padStart(2,"0")}`;
+    const own = b.owner!=null ? T[b.owner] : null, orig = b.orig!=null ? T[b.orig] : null;
+    let origCell, ownerCell;
+    if(b.comp==="cons"){
+      origCell = orig ? teamCell(orig,"Toilet Bowl winner") : `<div class="team"><b>TBD</b><small>Toilet Bowl winner</small></div>`;
+      ownerCell = own ? teamCell(own) : `<span class="muted">TBD</span>`;
+    } else if(b.comp==="lba"){
+      origCell = teamCell(orig, live?`Little Bitch Award · ${f2(b.pa)} PA`:"Little Bitch Award");
+      ownerCell = teamCell(own);
+    } else { origCell = teamCell(orig); ownerCell = teamCell(own); }
+    const brk = i>0 && vis[i-1].round!==b.round ? "round-break" : "";
+    return `<tr class="${brk} ${own?hl(own.owner_id):""}"><td class="pick">${pick}</td><td class="ovr">${overall.get(b)}</td><td>${origCell}</td><td>${ownerCell}</td></tr>`;
+  }).join("");
+  const sel = state.team ? ownerTeam(state.team) : null;
+  const held = sel ? D.board.filter(b=>b.owner!=null && T[b.owner].owner_id===state.team).map(b=>`${b.round}.${String(b.slot).padStart(2,"0")}`) : [];
+  const heldNote = sel ? `<span class="hl-note">${esc(sel.name)} holds ${held.length} pick${held.length===1?"":"s"}${held.length?": "+held.join(", "):""}</span>` : "";
+  const rules = live
+    ? `<li>1–4: teams ranked 5–8 today, lowest Max PF picks first</li><li>5–8: top four today, assuming they finish in standings order (1st picks 8th)</li><li>2.09: Toilet Bowl winner, TBD</li><li>3.09: most points against, current leader</li>`
+    : `<li>1–4: non-playoff teams, lowest Max PF picks first</li><li>5–8: playoff finish, champion picks 8th</li><li>2.09: Toilet Bowl winner</li><li>3.09: most points against</li>`;
+  return `<div class="page"><div class="bar-row"><span class="eyebrow">Draft</span><div class="seg" role="group" aria-label="Draft">${seg}</div>${heldNote}</div>
+  <section class="panel"><div class="panel-h"><div><div class="eyebrow">${D.season} rookie draft · ${live?"if the season ended today":"final order"}</div><h2>Draft Order</h2></div>
+  <button class="toggle-btn" id="draft-toggle" aria-expanded="${state.showFullDraft}">${state.showFullDraft?"Show round 1 only":"Show full draft ("+D.rounds+" rounds)"}</button></div>
+  <div class="panel-b"><ul class="rules">${rules}</ul>
+  <div class="tw draft-t"><table><thead><tr><th>Pick</th><th class="ovr" title="Overall pick number">Overall</th><th>Original owner</th><th>Current owner</th></tr></thead><tbody>${rowsHtml}</tbody></table></div></div></section></div>`;
+}
+
+/* ---------- record books ---------- */
+function resTag(r){ return r.res?`<span class="res ${r.res==="W"?"w":"l"}" title="${r.res==="W"?"Won":"Lost"} ${f2(r.pts)}–${f2(r.opp_pts)}">${r.res}</span>`:""; }
+function recCard(title, desc, list, fmtRow){
+  if(!list||!list.length) return "";
+  return `<div class="card"><h3>${esc(title)}</h3><div class="desc">${esc(desc)}</div><ol>${list.map((r,i)=>fmtRow(r,i)).join("")}</ol></div>`;
+}
+const vsCls = oid => state.team && oid===state.team ? "vs" : "";
+const liCls = (oid, opp) => `${hl(oid)} ${opp?vsCls(opp.owner_id):""}`;
+const curDot = r => r.season===CUR ? `<i class="cdot" title="${CUR} season" aria-label="${CUR} season"></i>` : "";
+const oppName = o => state.team && o.owner_id===state.team ? `<span class="vs-n">${esc(o.name)}</span>` : esc(o.name);
+function weekRow(r,i,valFmt){
+  const T=teamsOf(r.season); const t=T[r.rid]; const o=r.opp!=null?T[r.opp]:null;
+  const ctx = `Wk ${r.w}${r.post?" (playoffs)":""}${o?` vs ${oppName(o)}`:""}${r._showSeason?` · ${r.season}`:""}`;
+  return `<li class="${liCls(t.owner_id,o)}"><span class="i">${i+1}${r._showSeason?curDot(r):""}</span><span class="who"><b>${esc(t.name)}</b><small>${ctx}</small></span><span class="v">${valFmt(r)}</span></li>`;
+}
+function ownerRow(r,i,valFmt,sub){
+  const t=r.season?teamAt(r.season,r.owner_id):ownerTeam(r.owner_id);
+  return `<li class="${hl(r.owner_id)}"><span class="i">${i+1}${curDot(r)}</span><span class="who"><b>${esc(t.name)}</b>${sub?`<small>${esc(sub(r))}</small>`:""}</span><span class="v">${valFmt(r)}</span></li>`;
+}
+function playerRow(kind){
+  return (r,i)=>{ const T=teamsOf(r.season); const t=T[r.rid]; const o=r.opp!=null?T[r.opp]:null;
+    const yr = r._showSeason ? `${r.season} ` : "";
+    let ctx;
+    if(kind==="bust") ctx=`${esc(t.name)} lost by ${f2(r.margin)}${o?` to ${oppName(o)}`:""}`;
+    else if(kind==="hero") ctx=`${esc(t.name)} won by ${f2(r.margin)}${o?` over ${oppName(o)}`:""}`;
+    else ctx=`${esc(t.name)}${o?` vs ${oppName(o)}`:""}`;
+    const val = kind==="bust" ? `−${f1(r.short)}` : (kind==="top" ? `${f2(r.act)} ${resTag(r)}` : `+${f1(r.over)}`);
+    const tail = kind==="top" ? (r.proj!=null?`${f1(r.proj)} projected`:"no projection") : `${f1(r.act)} scored, ${f1(r.proj)} projected`;
+    return `<li class="${liCls(t.owner_id,o)}"><span class="i">${i+1}${r._showSeason?curDot(r):""}</span><span class="who"><b>${posTag(r.pos)} ${esc(r.player)}${r.bench?' <span class="chip warn" title="Scored on the bench">Bench</span>':""}</b><small>${yr}Wk ${r.w}${r.post?" (playoffs)":""} · ${ctx}</small><small>${tail}</small></span><span class="v">${val}</span></li>`; };
+}
+function weeklyCards(L){
+  let h=`<div class="cards">`;
+  h+=recCard("Highest scoring weeks","Most points by one team in a week",L.high,(r,i)=>weekRow(r,i,x=>f2(x.pts)));
+  h+=recCard("Most efficient weeks","Points ÷ best possible lineup",L.eff,(r,i)=>weekRow(r,i,x=>`${pct(x.eff,1)} ${resTag(x)}`));
+  h+=recCard("Luckiest wins","Fewest points scored in a win",L.lucky,(r,i)=>weekRow(r,i,x=>`${f2(x.pts)} <small class="faint">vs ${f2(x.opp_pts)}</small>`));
+  h+=recCard("Lowest scoring weeks","Fewest points by one team in a week",L.low,(r,i)=>weekRow(r,i,x=>f2(x.pts)));
+  h+=recCard("Least efficient weeks","Points ÷ best possible lineup",L.ineff,(r,i)=>weekRow(r,i,x=>`${pct(x.eff,1)} ${resTag(x)}`));
+  h+=recCard("Unluckiest losses","Most points scored in a loss",L.unlucky,(r,i)=>weekRow(r,i,x=>`${f2(x.pts)} <small class="faint">vs ${f2(x.opp_pts)}</small>`));
+  h+=recCard("Game-winning performances","Starters who beat projection by more than the winning margin; points over, one per win",L.heroes,playerRow("hero"));
+  h+=recCard("Best player performances","Most points by any rostered player in a week, bench included",L.top,playerRow("top"));
+  h+=recCard("Game-losing performances","Starters who missed projection by more than the losing margin; points short, one per loss",L.busts,playerRow("bust"));
+  return h+`</div>`;
+}
+function seasonRecords(){
+  const seasonRows=SEASONS.flatMap(s=>{const T=teamsOf(s); const S=LG.seasons[s]; const done=S.status==="complete"; return S.standings.map(x=>{ const proj=!done&&state.projFull&&x.exp_wins!=null; return {owner_id:T[x.rid].owner_id, season:s, complete:done, proj, w:proj?x.exp_wins:x.w, l:proj?S.reg_weeks-x.exp_wins:x.l, t:x.t, pf:proj?x.exp_pf:x.pf, weeks:x.weeks, rw:x.w, rl:x.l, rpf:x.pf, ap:x.ap_pct, apw:x.apw, apn:x.apn}; });});
+  const wkey=x=>x.w+0.5*x.t;
+  const seasonSub=x=>x.proj?`${x.rw}-${x.rl} through Wk ${x.weeks}`:x.season+(x.complete?"":` · through Wk ${x.weeks}`);
+  const recVal=x=>x.proj?`${x.w.toFixed(1)}<span class="proj-tag">proj wins</span>`:`${x.w}-${x.l}${x.t?"-"+x.t:""}`;
+  const pfVal=x=>x.proj?`${f1(x.pf)}<span class="proj-tag">proj</span>`:f2(x.pf);
+  const pfSub=x=>x.proj?`${f2(x.rpf)} through Wk ${x.weeks}`:x.season+(x.complete?"":` · through Wk ${x.weeks}`);
+  const apSub=x=>x.season+(x.complete?"":` · through Wk ${x.weeks}`)+` · ${Math.round(x.apw)}-${x.apn-Math.round(x.apw)}`;
+  const projNote=state.projFull?`; ${CUR} shows projected wins`:"";
+  const ptsNote=state.projFull?`; ${CUR} shows projected total`:"";
+  let h=`<div class="cards">`;
+  h+=recCard("Best regular season team","Most wins in a regular season, then points for"+projNote,seasonRows.slice().sort((a,b)=>wkey(b)-wkey(a)||b.pf-a.pf).slice(0,10),(r,i)=>ownerRow(r,i,recVal,seasonSub));
+  h+=recCard("Most points in a season","Regular season points for"+ptsNote,seasonRows.slice().sort((a,b)=>b.pf-a.pf).slice(0,10),(r,i)=>ownerRow(r,i,pfVal,pfSub));
+  h+=recCard("Best all-play, single season","Regular season, weekly all-play",seasonRows.slice().sort((a,b)=>b.ap-a.ap).slice(0,10),(r,i)=>ownerRow(r,i,x=>pct(x.ap,1),apSub));
+  h+=recCard("Worst regular season team","Fewest wins in a regular season, then points for"+projNote,seasonRows.slice().sort((a,b)=>wkey(a)-wkey(b)||a.pf-b.pf).slice(0,10),(r,i)=>ownerRow(r,i,recVal,seasonSub));
+  h+=recCard("Least points in a season","Regular season points for"+ptsNote,seasonRows.slice().sort((a,b)=>a.pf-b.pf).slice(0,10),(r,i)=>ownerRow(r,i,pfVal,pfSub));
+  h+=recCard("Worst all-play, single season","Regular season, weekly all-play",seasonRows.slice().sort((a,b)=>a.ap-b.ap).slice(0,10),(r,i)=>ownerRow(r,i,x=>pct(x.ap,1),apSub));
+  return h+`</div>`;
+}
+function recordsPage(){
+  const sub=state.sub, A=LG.alltime;
+  const mark=list=>(list||[]).map(r=>({...r,_showSeason:true}));
+  const merge=(key,sortFn)=>mark(SEASONS.flatMap(s=>LG.seasons[s].records[key]||[]).sort(sortFn).slice(0,10));
+  const pills = SUBS.map(s=>`<button class="pc" data-sub="${s.k}" aria-pressed="${sub===s.k}">${esc(s.l)}</button>`).join("");
+  const selName = state.team ? esc(ownerTeam(state.team).name) : "";
+  const selSw = state.team?`<span><span class="sw hl"></span>${selName}</span>`:"";
+  const vsSw = state.team?`<span><span class="sw vs"></span>Against ${selName}</span>`:"";
+  const curSw = `<span><i class="cdot"></i>${CUR} season</span>`;
+  let title, note, right="", body, legend="";
+  if(sub.startsWith("s:")){
+    const s=sub.slice(2), S=LG.seasons[s];
+    title=`${s} Season`; note=`Weekly records from ${s}${S.status==="complete"?"":` through Week ${S.last_scored}`}. Every head-to-head game counts, playoffs and consolation included.`;
+    legend=selSw+vsSw; body=weeklyCards(S.records);
+  } else if(sub==="weekly"){
+    title="All-Time Weekly"; note=`${SEASONS.slice().reverse().join("–")}. Every head-to-head game counts, playoffs and consolation included.`;
+    legend=curSw+selSw+vsSw;
+    body=weeklyCards({high:mark(A.high), low:mark(A.low), eff:mark(A.eff), ineff:mark(A.ineff), lucky:mark(A.lucky), unlucky:mark(A.unlucky),
+      heroes:merge("heroes",(a,b)=>b.over-a.over), top:merge("top",(a,b)=>b.act-a.act), busts:merge("busts",(a,b)=>b.short-a.short)});
+  } else if(sub==="seasons"){
+    title="All-Time Season"; note="Regular season only.";
+    legend=curSw+selSw;
+    right=`<div class="seg" role="group" aria-label="${CUR} season"><button data-projfull="0" aria-pressed="${!state.projFull}">${CUR} to date</button><button data-projfull="1" aria-pressed="${!!state.projFull}">${CUR} projected</button></div>`;
+    body=seasonRecords();
+  } else {
+    title="All-Time Records"; note=`Every season combined, ${SEASONS.slice().reverse().join("–")}.`;
+    legend=selSw;
+    body=`<div class="cards">`+
+      recCard("Best record all time","All games, playoffs and consolation included",A.most_wins_all,(r,i)=>ownerRow(r,i,x=>`${x.w}-${x.l}${x.t?"-"+x.t:""}`))+
+      recCard("Best all-play, all time","Every week, playoffs included",A.ap_all,(r,i)=>ownerRow(r,i,x=>pct(x.ap_pct,1),x=>`${Math.round(x.apw)}-${x.apn-Math.round(x.apw)}`))+
+      recCard("Most efficient teams","All-time points ÷ best possible lineups",A.eff_team,(r,i)=>ownerRow(r,i,x=>pct(x.eff,1)))+`</div>`;
+  }
+  return `<div class="page"><div class="bar-row rec-bar"><div class="pills" role="group" aria-label="Record book section">${pills}</div><span class="hl-note" id="hl-note"></span></div>
+  <section class="panel"><div class="panel-h"><div><div class="eyebrow">Record book</div><h2>${esc(title)}</h2><div class="muted" style="font-size:12.5px;margin-top:2px">${esc(note)}</div>${legend?`<div class="legend" style="margin-top:6px">${legend}</div>`:""}</div>${right}</div>
+  <div class="panel-b">${body}</div></section></div>`;
+}
+
+/* ---------- league admin ---------- */
+const money = v => "$" + Number(v).toLocaleString();
+function adminPage(){
+  const A=LG.admin, X=LG.admin_live;
+  if(!A) return `<div class="page"><p class="muted">League admin details haven't been added yet.</p></div>`;
+  const subs=[{k:"dates",l:"Important Dates"},{k:"rules",l:"League Rules"},{k:"pay",l:`Payouts (${A.season})`}];
+  const pills=subs.map(s=>`<button class="pc" data-asub="${s.k}" aria-pressed="${state.asub===s.k}">${esc(s.l)}</button>`).join("");
+  let title, note, body;
+  if(state.asub==="dates"){
+    const today=new Date(); today.setHours(0,0,0,0);
+    const parse=d=>{ const [y,m,dd]=d.split("-").map(Number); return new Date(y,m-1,dd); };
+    const nextIdx=A.dates.findIndex(x=>x.date && parse(x.date)>=today);
+    const nPast=A.dates.filter(x=>!x.date||parse(x.date)<today).length;
+    const rows=A.dates.map((x,i)=>{
+      const d=x.date?parse(x.date):null, past=!d||d<today, days=d?Math.round((d-today)/864e5):null;
+      const when=d?`<b>${d.toLocaleDateString("en-US",{month:"short",day:"numeric"})}</b><small>${d.toLocaleDateString("en-US",{weekday:"short"})}</small>`:`<b>—</b><small>${esc(x.date_text||"")}</small>`;
+      const st=past?`<span class="chip">Done</span>`:(i===nextIdx?`<span class="chip acc">Next</span><span>${days===0?"Today":days===1?"Tomorrow":`in ${days} days`}</span>`:`<span>in ${days} days</span>`);
+      if(past && !state.showPast) return "";
+      return `<li class="${past?"past":""} ${i===nextIdx?"next":""}"><div class="dt-when">${when}</div><div class="dt-what"><b>${esc(x.event)}</b><span>${esc(x.what)}</span>${x.note?`<small>${esc(x.note)}</small>`:""}</div><div class="dt-st">${st}</div></li>`;
+    }).join("");
+    title=`${A.season} Important Dates`; note="From the league's 2026 season calendar. Countdown uses today's date.";
+    const pastBtn=nPast?`<button class="toggle-btn" id="past-toggle" aria-expanded="${!!state.showPast}">${state.showPast?"Hide past dates":`Show ${nPast} past date${nPast===1?"":"s"}`}</button>`:"";
+    body=`<div class="admin-grid"><div class="dates-col"><ol class="dates">${rows}</ol>${pastBtn}</div>
+      <div class="card"><h3>Every year</h3><div class="desc">How the league calendar runs</div><ol class="yearly">${A.yearly.map(y=>`<li>${esc(y)}</li>`).join("")}</ol></div></div>`;
+  } else if(state.asub==="rules"){
+    title="League Rules"; note="Official League Rulebook, 2026 edition.";
+    body=`<div class="cards">${A.rules.map(r=>`<div class="card rule"><h3>${esc(r.title)}</h3><ul>${r.items.map(it=>`<li>${esc(it)}</li>`).join("")}</ul></div>`).join("")}</div>`;
+  } else {
+    const P=A.payouts, T=teamsOf(A.season);
+    const nm=rid=>T[rid]?T[rid].name:"?", oid=rid=>T[rid]?T[rid].owner_id:null;
+    const done=X&&X.status==="complete";
+    const places=P.places.map(p=>{ const rid=X&&X.places?X.places[String(p.place)]:null;
+      const who=p.place<=3?(rid?`<b class="${hl(oid(rid))?"hl-t":""}">${esc(nm(rid))}</b>`:`<span class="faint">TBD after Week 16</span>`):"";
+      return `<div class="place ${p.amount?"":"zero"}"><span class="pl-l"><b>${esc(p.label)}</b>${p.extra?`<small>${esc(p.extra)}</small>`:""}${who?`<small>${who}</small>`:""}</span><span class="money">${money(p.amount)}</span></div>`; }).join("");
+    const wk=(X&&X.weekly)||[], W=P.weekly;
+    const wkRows=wk.map(r=>`<tr class="${r.rids.some(x=>hl(oid(x)))?"hl":""}"><td>Wk ${r.w}</td><td>${r.rids.map(x=>esc(nm(x))).join(" & ")}${r.rids.length>1?' <span class="chip">split</span>':""}</td><td class="n">${f2(r.pts)}</td><td class="n">${money(W.amount/r.rids.length)}</td></tr>`).join("");
+    const left=W.weeks-wk.length;
+    const lead=X&&X.pf_leader;
+    title=`${A.season} Payouts`; note="From the Official League Rulebook. Weekly winners update with each refresh.";
+    body=`<div class="cards pay">
+      <div class="card"><h3>Final standings</h3><div class="desc">Paid after the championship</div>${places}</div>
+      <div class="card"><h3>${esc(W.label)}</h3><div class="desc">${money(W.amount)} a week, Weeks 1–${W.weeks}</div>
+        ${wk.length?`<div class="tw"><table class="wk"><thead><tr><th>Week</th><th>Manager</th><th class="n">Score</th><th class="n">Paid</th></tr></thead><tbody>${wkRows}</tbody></table></div>`:`<p class="muted">No weeks played yet.</p>`}
+        ${left>0?`<p class="muted" style="margin:0;font-size:13px">${money(left*W.amount)} still to win over ${left} week${left===1?"":"s"}.</p>`:""}</div>
+      <div class="card"><h3>${esc(P.season_high.label)}</h3><div class="desc">${esc(P.season_high.amount_text)}</div>
+        ${lead?`<div class="place"><span class="pl-l"><b class="${hl(oid(lead.rid))?"hl-t":""}">${esc(nm(lead.rid))}</b><small>${X.last_scored>=X.reg_weeks?"Final":"Leading through Week "+X.last_scored}</small></span><span class="money sm">${f2(lead.pf)}</span></div>`:""}
+      </div></div>`;
+  }
+  return `<div class="page"><div class="bar-row rec-bar"><div class="pills" role="group" aria-label="League admin section">${pills}</div></div>
+  <section class="panel"><div class="panel-h"><div><div class="eyebrow">League admin</div><h2>${esc(title)}</h2><div class="muted" style="font-size:12.5px;margin-top:2px">${esc(note)}</div></div></div>
+  <div class="panel-b admin">${body}</div></section></div>`;
+}
+
+/* ---------- shell ---------- */
+function render(){
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", String(t.dataset.tab===state.tab)));
+  const sel=$("#team-sel"); sel.value=state.team; sel.classList.toggle("on", !!state.team);
+  let h = state.tab==="draft" ? draftPage() : state.tab==="records" ? recordsPage() : state.tab==="brackets" ? bracketsPage() : state.tab==="admin" ? adminPage() : standingsPage();
+  h += `<p class="foot">Data from Sleeper, pulled ${esc(new Date(LG.meta.pulled_at).toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}))}. ${esc(LG.meta.scoring)}.</p>`;
+  $("#app").innerHTML=h;
+  const ap=document.querySelector('.pills .pc[aria-pressed="true"]'); if(ap){ const bx=ap.parentElement; const l=ap.offsetLeft-16, r=ap.offsetLeft+ap.offsetWidth+16-bx.clientWidth; if(bx.scrollLeft>l) bx.scrollLeft=l; else if(bx.scrollLeft<r) bx.scrollLeft=r; }
+  const n=$("#hl-note");
+  if(n){ if(state.team){ const c=document.querySelectorAll("#app .card li.hl").length, v=document.querySelectorAll("#app .card li.vs").length; n.innerHTML=`${esc(ownerTeam(state.team).name)}: ${c} ${c===1?"entry":"entries"}${v?` · <span class="vs-c">${v} against</span>`:""}`; } else n.innerHTML=""; }
+}
+$("#team-sel").innerHTML = `<option value="">Highlight a team</option>` + TEAM_OPTS.map(t=>`<option value="${esc(t.owner_id)}">${esc(t.name)}</option>`).join("");
+$("#team-sel").addEventListener("change", e=>{ state.team=e.target.value; store.set("team",state.team); render(); });
+document.addEventListener("click", e=>{
+  const th=e.target.closest("th.sortable");
+  if(th){ const id=th.closest("table").id; const k=th.dataset.k; const st=state.sorts[id]; if(st.key===k) st.dir*=-1; else { st.key=k; st.dir=(k==="rank"||k==="team")?1:-1; } render(); return; }
+  const t=e.target.closest("[data-tab]"); if(t){ state.tab=t.dataset.tab; try{history.replaceState(null,"","#"+state.tab)}catch(_){} render(); window.scrollTo(0,0); return; }
+  const s=e.target.closest("[data-season]"); if(s){ state.season=s.dataset.season; store.set("season",state.season); render(); return; }
+  const bk=e.target.closest("[data-bk]"); if(bk){ state.bk=bk.dataset.bk; store.set("bk",state.bk); render(); return; }
+  const d=e.target.closest("[data-draft]"); if(d){ state.draft=d.dataset.draft; store.set("draft",state.draft); render(); return; }
+  const as=e.target.closest("[data-asub]"); if(as){ state.asub=as.dataset.asub; store.set("asub",state.asub); render(); return; }
+  const sb=e.target.closest("[data-sub]"); if(sb){ state.sub=sb.dataset.sub; store.set("sub",state.sub); render(); return; }
+  const pf=e.target.closest("[data-projfull]"); if(pf){ state.projFull=pf.dataset.projfull==="1"; store.set("projFull",state.projFull); render(); return; }
+  if(e.target.closest("#past-toggle")){ state.showPast=!state.showPast; render(); return; }
+  if(e.target.closest("#draft-toggle")){ state.showFullDraft=!state.showFullDraft; render(); return; }
+});
+document.addEventListener("keydown", e=>{ if((e.key==="Enter"||e.key===" ") && e.target.matches("th.sortable")){ e.preventDefault(); e.target.click(); }});
+const h0=(location.hash||"").replace("#",""); if(["standings","brackets","draft","records","admin"].includes(h0)) state.tab=h0;
+$("#freshness").textContent = `${LG.meta.league_name} · ${CUR} Week ${LG.meta.current_week} · updated ${new Date(LG.meta.pulled_at).toLocaleDateString(undefined,{month:"short",day:"numeric"})}`;
+render();
+})();
+</script>
+</body></html>
