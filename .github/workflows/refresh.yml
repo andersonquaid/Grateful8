@@ -2,10 +2,13 @@ name: Refresh league hub
 
 on:
   schedule:
-    # Tuesdays 5:03 AM Eastern. GitHub schedules run in UTC, so there is one entry for daylight time (EDT, 09:03 UTC)
-    # and one for standard time (EST, 10:03 UTC); the first step skips whichever doesn't match the current season.
+    # Tuesdays from 5 AM Eastern. GitHub schedules run in UTC and are best-effort (a run can be late or dropped),
+    # so there are four hourly slots, 09:03-12:03 UTC. The gate step runs the first slot at or after 5 AM Eastern
+    # (09:03 UTC in daylight time, 10:03 UTC in standard time) and skips the rest once that day's refresh is on main.
     - cron: "3 9 * * 2"
     - cron: "3 10 * * 2"
+    - cron: "3 11 * * 2"
+    - cron: "3 12 * * 2"
   workflow_dispatch:        # "Run workflow" button for an on-demand refresh
   push:
     branches: [main]
@@ -23,18 +26,22 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Keep only the 5 AM Eastern run
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 30
+      - name: Run once per Tuesday, from 5 AM Eastern
         id: gate
         run: |
-          off=$(TZ=America/New_York date +%z)
-          want="3 10 * * 2"; [ "$off" = "-0400" ] && want="3 9 * * 2"
-          if [ "${{ github.event_name }}" = "schedule" ] && [ "${{ github.event.schedule }}" != "$want" ]; then
-            echo "run=false" >> "$GITHUB_OUTPUT"; echo "Skipping: this is the other daylight-saving slot."
+          today=$(TZ=America/New_York date +%F); hour=$(TZ=America/New_York date +%-H)
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          elif [ "$hour" -lt 5 ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"; echo "Skipping: before 5 AM Eastern."
+          elif git log -30 --format=%s | grep -q "^Refresh league hub $today"; then
+            echo "run=false" >> "$GITHUB_OUTPUT"; echo "Skipping: already refreshed today."
           else
             echo "run=true" >> "$GITHUB_OUTPUT"
           fi
-      - uses: actions/checkout@v4
-        if: steps.gate.outputs.run == 'true'
       - uses: actions/setup-python@v5
         if: steps.gate.outputs.run == 'true'
         with:
@@ -54,7 +61,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git diff --cached --quiet || { git commit -m "Refresh league hub $(date -u +%F)"; git push; }
+          git diff --cached --quiet || { git commit -m "Refresh league hub $(TZ=America/New_York date +%F)"; git push; }
       - name: Publish to GitHub Pages (gh-pages branch)
         if: steps.gate.outputs.run == 'true'
         env:
@@ -64,5 +71,5 @@ jobs:
           cd /tmp/site
           git init -q -b gh-pages
           git add -A
-          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "Publish $(date -u +%F)"
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "Publish $(TZ=America/New_York date +%F)"
           git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages

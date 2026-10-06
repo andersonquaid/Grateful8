@@ -6,7 +6,7 @@ Standings, playoff and Toilet Bowl brackets, rookie draft order and record books
 
 ## How it stays current
 
-A GitHub Action (`.github/workflows/refresh.yml`) runs every Tuesday at 5:03 AM Eastern (daylight or standard time). It pulls the league from the public Sleeper API, rebuilds `index.html`, commits it to `main`, and publishes it to the `gh-pages` branch, which GitHub Pages serves. The site updates a minute or two later. To refresh on demand: **Actions → Refresh league hub → Run workflow**.
+A GitHub Action (`.github/workflows/refresh.yml`) runs every Tuesday from 5:03 AM Eastern (daylight or standard time), with hourly backup slots until about 8 AM in case GitHub delays or drops a scheduled run; only the first one that fires does the refresh. It pulls the league from the public Sleeper API, rebuilds `index.html`, commits it to `main`, and publishes it to the `gh-pages` branch, which GitHub Pages serves. The site updates a minute or two later. To refresh on demand: **Actions → Refresh league hub → Run workflow**.
 
 ## Files
 
