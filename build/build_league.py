@@ -369,11 +369,20 @@ def records_for(weeks_rows, top=10):
     for r in weeks_rows:
         r["eff"] = round(r["pts"] / r["max"], 4) if r["max"] else 0
     keep_e = keep + ["eff"]
+    keep_ap = keep + ["ap_w", "ap_n"]
+    ap = lambda r: r["ap_w"] / r["ap_n"] if r.get("ap_n") else 0.5
+    lucky = [r for r in games if r["res"] == "W" and ap(r) < 0.5]
+    unlucky = [r for r in games if r["res"] == "L" and ap(r) > 0.5]
     return {
         "high": pick(games, lambda r: r["pts"], True, keep),
         "low": pick(games, lambda r: r["pts"], False, keep),
-        "lucky": pick([r for r in games if r["res"] == "W"], lambda r: r["pts"], False, keep),
-        "unlucky": pick([r for r in games if r["res"] == "L"], lambda r: r["pts"], True, keep),
+        # luck = result vs all-play that week: wins that would have beaten under half the league (lowest
+        # all-play first, then fewest points) and losses that would have beaten over half (highest first,
+        # then most points). *_reg = regular season only, for the include/exclude-playoffs toggle.
+        "lucky": pick(lucky, lambda r: (ap(r), r["pts"]), False, keep_ap),
+        "unlucky": pick(unlucky, lambda r: (-ap(r), -r["pts"]), False, keep_ap),
+        "lucky_reg": pick([r for r in lucky if not r.get("post")], lambda r: (ap(r), r["pts"]), False, keep_ap),
+        "unlucky_reg": pick([r for r in unlucky if not r.get("post")], lambda r: (-ap(r), -r["pts"]), False, keep_ap),
         "eff": pick(games, lambda r: r["eff"], True, keep_e),
         "ineff": pick(games, lambda r: r["eff"], False, keep_e),
     }

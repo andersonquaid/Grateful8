@@ -269,6 +269,11 @@ table.wk td,table.wk th{padding:6px 6px}
   .foot{font-size:13px}
 }
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+.card-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.card-h h3{margin:0}
+.seg.mini-seg button{font-size:11.5px;padding:3px 8px;min-height:0}
+.luckv{display:block;text-align:right;font-size:11px;line-height:1.3;font-weight:500;white-space:nowrap}
 </style>
 
 <header class="top">
@@ -318,7 +323,7 @@ const TEAM_OPTS = LG.seasons[CUR].teams.slice().sort((a,b)=>a.name.localeCompare
 const SUBS = [...SEASONS.map(s=>({k:"s:"+s, l:`${s} Season`})), {k:"weekly",l:"All-Time Weekly"}, {k:"seasons",l:"All-Time Season"}, {k:"career",l:"All-Time Records"}];
 const state = {
   tab: "standings", asub: store.get("asub", "dates"), season: store.get("season", CUR), draft: store.get("draft", CUR), bk: store.get("bk", CUR), sub: store.get("sub", "s:"+CUR),
-  team: store.get("team", ""), projFull: store.get("projFull", false), showFullDraft: false, sorts: {}
+  team: store.get("team", ""), projFull: store.get("projFull", false), lpo: store.get("lpo", true), showFullDraft: false, sorts: {}
 };
 if (!LG.seasons[state.season] && state.season!=="all") state.season = CUR;
 if (!LG.seasons[state.draft]) state.draft = CUR;
@@ -441,10 +446,15 @@ function draftPage(){
 
 /* ---------- record books ---------- */
 function resTag(r){ return r.res?`<span class="res ${r.res==="W"?"w":"l"}" title="${r.res==="W"?"Won":"Lost"} ${f2(r.pts)}–${f2(r.opp_pts)}">${r.res}</span>`:""; }
-function recCard(title, desc, list, fmtRow){
-  if(!list||!list.length) return "";
-  return `<div class="card"><h3>${esc(title)}</h3><div class="desc">${esc(desc)}</div><ol>${list.map((r,i)=>fmtRow(r,i)).join("")}</ol></div>`;
+function recCard(title, desc, list, fmtRow, opts={}){
+  if((!list||!list.length) && !opts.empty) return "";
+  const head = opts.tool ? `<div class="card-h"><h3>${esc(title)}</h3>${opts.tool}</div>` : `<h3>${esc(title)}</h3>`;
+  const body = list&&list.length ? `<ol>${list.map((r,i)=>fmtRow(r,i)).join("")}</ol>` : `<p class="faint" style="margin:0;font-size:13px">${esc(opts.empty)}</p>`;
+  return `<div class="card">${head}<div class="desc">${esc(desc)}</div>${body}</div>`;
 }
+// luckiest wins / unluckiest losses: include or exclude playoff (and consolation) games
+function lpoSeg(){ return `<div class="seg mini-seg" role="group" aria-label="Playoff games"><button data-lpo="1" aria-pressed="${!!state.lpo}" title="Include playoff and consolation games">With playoffs</button><button data-lpo="0" aria-pressed="${!state.lpo}" title="Regular season only">Reg. season</button></div>`; }
+function luckVal(x){ const w=x.ap_w, l=x.ap_n-x.ap_w, f=v=>Number.isInteger(v)?v:v.toFixed(1); return `${f2(x.pts)}<small class="faint luckv">vs ${f2(x.opp_pts)}<br>${f(w)}-${f(l)} all-play</small>`; }
 const vsCls = oid => state.team && oid===state.team ? "vs" : "";
 const liCls = (oid, opp) => `${hl(oid)} ${opp?vsCls(opp.owner_id):""}`;
 const curDot = r => r.season===CUR ? `<i class="cdot" title="${CUR} season" aria-label="${CUR} season"></i>` : "";
@@ -473,10 +483,10 @@ function weeklyCards(L){
   let h=`<div class="cards">`;
   h+=recCard("Highest scoring weeks","Most points by one team in a week",L.high,(r,i)=>weekRow(r,i,x=>f2(x.pts)));
   h+=recCard("Most efficient weeks","Points ÷ best possible lineup",L.eff,(r,i)=>weekRow(r,i,x=>`${pct(x.eff,1)} ${resTag(x)}`));
-  h+=recCard("Luckiest wins","Fewest points scored in a win",L.lucky,(r,i)=>weekRow(r,i,x=>`${f2(x.pts)} <small class="faint">vs ${f2(x.opp_pts)}</small>`));
+  h+=recCard("Luckiest wins","Wins with a losing all-play record that week: lowest all-play first, then fewest points",state.lpo?L.lucky:L.lucky_reg,(r,i)=>weekRow(r,i,x=>luckVal(x)),{tool:lpoSeg(),empty:"None yet"});
   h+=recCard("Lowest scoring weeks","Fewest points by one team in a week",L.low,(r,i)=>weekRow(r,i,x=>f2(x.pts)));
   h+=recCard("Least efficient weeks","Points ÷ best possible lineup",L.ineff,(r,i)=>weekRow(r,i,x=>`${pct(x.eff,1)} ${resTag(x)}`));
-  h+=recCard("Unluckiest losses","Most points scored in a loss",L.unlucky,(r,i)=>weekRow(r,i,x=>`${f2(x.pts)} <small class="faint">vs ${f2(x.opp_pts)}</small>`));
+  h+=recCard("Unluckiest losses","Losses with a winning all-play record that week: highest all-play first, then most points",state.lpo?L.unlucky:L.unlucky_reg,(r,i)=>weekRow(r,i,x=>luckVal(x)),{tool:lpoSeg(),empty:"None yet"});
   h+=recCard("Game-winning performances","Starters who beat projection by more than the winning margin; points over, one per win",L.heroes,playerRow("hero"));
   h+=recCard("Best player performances","Most points by any rostered player in a week, bench included",L.top,playerRow("top"));
   h+=recCard("Game-losing performances","Starters who missed projection by more than the losing margin; points short, one per loss",L.busts,playerRow("bust"));
@@ -518,7 +528,7 @@ function recordsPage(){
   } else if(sub==="weekly"){
     title="All-Time Weekly"; note=`${SEASONS.slice().reverse().join("–")}. Every head-to-head game counts, playoffs and consolation included.`;
     legend=curSw+selSw+vsSw;
-    body=weeklyCards({high:mark(A.high), low:mark(A.low), eff:mark(A.eff), ineff:mark(A.ineff), lucky:mark(A.lucky), unlucky:mark(A.unlucky),
+    body=weeklyCards({high:mark(A.high), low:mark(A.low), eff:mark(A.eff), ineff:mark(A.ineff), lucky:mark(A.lucky), unlucky:mark(A.unlucky), lucky_reg:mark(A.lucky_reg), unlucky_reg:mark(A.unlucky_reg),
       heroes:merge("heroes",(a,b)=>b.over-a.over), top:merge("top",(a,b)=>b.act-a.act), busts:merge("busts",(a,b)=>b.short-a.short)});
   } else if(sub==="seasons"){
     title="All-Time Season"; note="Regular season only.";
@@ -614,6 +624,7 @@ document.addEventListener("click", e=>{
   const as=e.target.closest("[data-asub]"); if(as){ state.asub=as.dataset.asub; store.set("asub",state.asub); render(); return; }
   const sb=e.target.closest("[data-sub]"); if(sb){ state.sub=sb.dataset.sub; store.set("sub",state.sub); render(); return; }
   const pf=e.target.closest("[data-projfull]"); if(pf){ state.projFull=pf.dataset.projfull==="1"; store.set("projFull",state.projFull); render(); return; }
+  const lp=e.target.closest("[data-lpo]"); if(lp){ state.lpo=lp.dataset.lpo==="1"; store.set("lpo",state.lpo); render(); return; }
   if(e.target.closest("#past-toggle")){ state.showPast=!state.showPast; render(); return; }
   if(e.target.closest("#draft-toggle")){ state.showFullDraft=!state.showFullDraft; render(); return; }
 });
